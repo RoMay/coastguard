@@ -331,7 +331,7 @@
 					
 					Island.init()
 					
-					Flag.init();
+					//Flag.init();
 					
 					var shipsNumber = 20
 					var sDist = view.bounds.width/2
