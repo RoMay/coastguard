@@ -8,7 +8,25 @@
     <!--[if lt IE 9]>
 	<script type="text/javascript" src="excanvas.js"></script>
 	<![endif]-->
+	<script>
+	$(document).ready(function(){
+	debug = {
+		  defstr: "INFO: \n",
+		  obj: $("#debug-info"),
+		  toInfo: function(value){
+			debug.str = debug.defstr +" | "+ value;
+		  },
+		  toPrint: function(value){
+			var v = debug.defstr + value || debug.str
+			$(debug.obj).html(v);
+		  }
+		};
 	
+		//debug.toPrint("aaaaaaaaaaaaaa")
+	
+		})
+		
+	</script>	
     <script type="text/paperscript" canvas="a-canvas" src="canvas.js"></script>
 	<link rel="stylesheet" type='text/css' href='style.css' />
     <style>
@@ -42,7 +60,7 @@
 		<img id="ship1" class="ships" src="img/ship1.png" />
 		
 	  </div>
-	  
+	  <div id="debug-info"></div>
      
   </body> 
 </html> 

@@ -1,8 +1,10 @@
 
+		
 		var values = { // static values used as a predefined configuration 
 			zodControllArea: [0, 0],
 			horizont: view.bounds.height/3,
 			skyGradient: new Gradient(["#729FCF", "#97E1FC"]),
+			seeGradient: new Gradient(["#91cde0", "#4a8bcc"]),
 			cloudsGroup: false,
 			balloonsGroup: false
 			
@@ -105,10 +107,18 @@
 		//sky = new Path.Rectangle(0, [view.bounds.width, values.horizont])
 		
 		var Sky = {
-			background: function(gradientColor){
-				skyGradientColor = gradientColor || new GradientColor(values.skyGradient, [0, 0], [0, 300])
+			background: function(skyColor, seeColor){
+				skyGradientColor = skyColor || new GradientColor(values.skyGradient, [0, 0], [0, 300])
+				seeGradientColor = seeColor || new GradientColor(values.seeGradient, [0, 100], [0, 700])
+				
+				
 				var sky = new Path.Rectangle(0, [view.bounds.width, values.horizont])
-				sky.fillColor = skyGradientColor; 
+				sky.fillColor = skyGradientColor;
+				
+				var see = new Path.Rectangle([0, values.horizont], [view.bounds.width, view.bounds.height])
+				see.fillColor = seeGradientColor;
+
+				
 			
 			},
 			
@@ -385,7 +395,6 @@
 			
 			
 			
-			
 		}
 		
 		function onKeyDown(event) {
@@ -394,7 +403,8 @@
 				
 				drawShot()
 				
-				console.log("space")
+				debug.toPrint("space");
+		
 				
 				return false;
 			}
@@ -424,14 +434,14 @@
 			
 			if (event.key == "left") {
 				
-				console.log("leftUP")
+				debug.toPrint("leftUP")
 				
 				return false;
 			}
 			
 			if (event.key == "right") {
 				
-				console.log("right")
+				debug.toPrint("rightUP")
 				
 				return false;
 			}
