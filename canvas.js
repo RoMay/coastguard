@@ -83,7 +83,7 @@
 			},
 			
 			moveObjectOnLine: function (obj, direction){
-				var step = 10;
+				var step = 1;
 				
 				if(direction == "left")
 					obj.position.x -= step;
@@ -98,28 +98,33 @@
 		
 		
 		
-		var sky, zod, zodGround, baza, bazaGround, islandGround;
+		var sky, see, zod, zodGround, baza, bazaGround, islandGround;
 		
 		var clouds = [], balloons = [], ships = [], zodArea = [], bazaArea = [];//, zodControllArea = [0, 0]; 
 		
-		//var values.horizont = view.bounds.height/3 
 		
-		//sky = new Path.Rectangle(0, [view.bounds.width, values.horizont])
-		
-		var Sky = {
-			background: function(skyColor, seeColor){
+		var Background = {
+			sky: function(skyColor){
 				skyGradientColor = skyColor || new GradientColor(values.skyGradient, [0, 0], [0, 300])
-				seeGradientColor = seeColor || new GradientColor(values.seeGradient, [0, 100], [0, 700])
 				
-				
-				var sky = new Path.Rectangle(0, [view.bounds.width, values.horizont])
+				sky = new Path.Rectangle(0, [view.bounds.width, values.horizont])
 				sky.fillColor = skyGradientColor;
 				
-				var see = new Path.Rectangle([0, values.horizont], [view.bounds.width, view.bounds.height])
-				see.fillColor = seeGradientColor;
-
-				
+			},
 			
+			see: function(seeColor){
+				seeGradientColor = seeColor || new GradientColor(values.seeGradient, [0, 100], [0, 700])
+				
+				see = new Path.Rectangle([0, values.horizont], [view.bounds.width, view.bounds.height])
+				see.fillColor = seeGradientColor;
+				
+				if(!values.seeGroup){
+						seeGroup = new Group();
+						seeGroup.clipMask = false;
+						
+						values.seeGroup = true;
+				}	
+
 			},
 			
 			clouds: function(limit){
@@ -290,7 +295,8 @@
 				var scale = scale || this.defaults.objScale;
 				var position =  position || this.defaults.objPosition;
 				var inst = Methods.toPutInstance(object, scale, position);
-				
+				this.defaults.gun = inst;
+				//console.log(this.defaults)
 				return inst;
 				
 				//zodGroup.addChild(zodI)
@@ -301,14 +307,7 @@
 		}
 		
 
-		var shipsGroup = new Group();
-		//ships.clipMask = false;
-		
-		var zodAreaGroup = new Group();
-		zodAreaGroup.clipMask = false;
-		
-		var zodGroup = new Group();
-		zodGroup.clipMask = false;
+	
 		
 
 		function drawShot(){
@@ -316,18 +315,43 @@
 		}
 		
 		
+		
 		var Scene = new function(){
 			
+			var staticElems = new Group();
+			
+			
+			
+			
 			return {
+				update: function(){
+					cloudsGroup.position.x -=  0.2;
+			
+					balloonsGroup.position.x -=  0.15;
+					
+					shipsGroup.position.x -= 2
+				
+				},
+				
 				init: function(){
-					Sky.background();
-					Sky.clouds();
-					Sky.balloons();
+					Background.sky();
+					Background.see();
+					Background.clouds();
+					Background.balloons();
 					Baza.ground();
 					Baza.tower();
 					Zod.ground();
 					Zod.gun();
 					
+					shipsGroup = new Group();
+					//ships.clipMask = false;
+					zodAreaGroup = new Group();
+					zodAreaGroup.clipMask = false;
+					
+					zodGroup = new Group();
+					zodGroup.clipMask = false;
+			
+			
 					
 					$(objects.ships).each(function(){
 						Methods.toRasterSymbol($(this).attr("id"), ships)
@@ -335,9 +359,16 @@
 						
 					})
 						
+					/*
+					var shipsGroup = new Group();
+					//ships.clipMask = false;
 					
+					var zodAreaGroup = new Group();
+					zodAreaGroup.clipMask = false;
 					
-					
+					var zodGroup = new Group();
+					zodGroup.clipMask = false;
+					*/
 					
 					Island.init()
 					
@@ -381,18 +412,14 @@
 			})
 		*/	
 			
-			cloudsGroup.position.x -=  0.2;
 			
-			balloonsGroup.position.x -=  0.15;
-			
-			shipsGroup.position.x -= 2
 			/*
 			$(shipsGroup.children).each(function(i){
 					shipsGroup.children[i].rotate(i)
 			})
 			*/
 			
-			
+			Scene.update();
 			
 			
 		}
@@ -411,10 +438,7 @@
 			
 			if (event.key == "left" || event.key == "right") {
 				
-				//if(zodGroundI<)
-				
-				
-				//Methods.moveObjectOnLine(zodGroup, event.key)
+				Methods.moveObjectOnLine(Zod.defaults.gun, event.key)
 				
 				return false;
 			}
