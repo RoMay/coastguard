@@ -1,0 +1,39 @@
+ html, body {
+		height:100%;
+	 }
+	 
+	 body {
+		margin: 0px;
+		padding: 0px;
+		cursor: default;
+		overflow:hidden
+				
+	}
+
+	
+	.canvasWrapper {
+		width:100%;
+		height:100%;
+		position:relative;
+		border: 1px solid #e6e6e6;
+	}
+	
+	
+	
+	.canvasWrapper canvas {
+		top:0;
+		position:absolute; 
+		z-index:1; 
+		width:100%;
+		height:100%;
+		
+	}
+
+	.canvasWrapper #a-canvas {
+		background:#729FCF;
+		
+	}
+	
+	.canvasImages {
+		display: none
+	}
