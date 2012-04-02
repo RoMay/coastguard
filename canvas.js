@@ -311,6 +311,15 @@
 				controllArea: 0
 			},
 			
+			values: { 
+				moved_to: false
+			},
+			
+			move_gun_to: function(){
+					
+					Methods.moveObjectOnLine(this.defaults.gun, this.values.moved_to);
+			},
+			
 			ground: function(object, scale, position){
 				
 				var object = object || this.defaults.ground;
@@ -336,12 +345,10 @@
 
 				return inst;
 				
-				//zodGroup.addChild(zodI)
-				//zodAreaGroup.addChild(zodGroup)
 			}
 			
 			
-		}
+		};
 		
 
 
@@ -360,10 +367,10 @@
 			return {
 				update: function(){
 					cloudsGroup.position.x -=  0.2;
-			
 					balloonsGroup.position.x -=  0.15;
+					shipsGroup.position.x -= 1
 					
-					shipsGroup.position.x -= 2
+					if(Zod.values.moved_to) Zod.move_gun_to();
 				
 				},
 				
@@ -393,15 +400,15 @@
 					})
 					
 					
-					Island.init()
+					Island.init();
 					
-					var shipsNumber = 20
-					var sDist = view.bounds.width/2
+					var shipsNumber = 20;
+					var sDist = view.bounds.width/2;
 					Methods.toMultiplyObjects(ships, shipsNumber, shipsGroup, sDist, [0.05, 0.05]);
 				
 					
-					shipsGroup.position.x += view.bounds.width
-					shipsGroup.position.y = values.horizont+100
+					shipsGroup.position.x += view.bounds.width;
+					shipsGroup.position.y = values.horizont;
 				}
 			}
 			
@@ -420,13 +427,7 @@
 		
 		
 		function onFrame(event){
-		/*
-			$(group.children).each(function(i){
-					group.children[i].rotate(i+1)
-			})
-		*/	
-			
-
+		
 //			Baza.animate()
 			
 			Scene.update();
@@ -438,19 +439,28 @@
 			if (event.key == 'space') {
 				//layer.selected = !layer.selected;
 				
-				drawShot()
+				//drawShot()
 
 				debug.toPrint("space");
 						
 				return false;
-			}
+			};
 			
-			if (event.key == "left" || event.key == "right") {
+			if (event.key == "right") {
+				Zod.values.moved_to = "right";
 				
-				Methods.moveObjectOnLine(Zod.defaults.gun, event.key)
-				
+				debug.toPrint(Zod.values.moved_to)
 				return false;
-			}
+			};
+			
+			if (event.key == "left") {
+				Zod.values.moved_to = "left";
+				
+				debug.toPrint(Zod.values.moved_to)
+				return false;
+			};
+				
+				//return false;
 			
 		}
 		
@@ -465,21 +475,11 @@
 				return false;
 			}
 			
-			if (event.key == "left") {
-				
-
-				debug.toPrint("leftUP")
-
-				
-				return false;
-			}
 			
-			if (event.key == "right") {
-				
-				debug.toPrint("rightUP")
-				
-				return false;
-			}
+			
+			if (event.key == "left" || event.key == "right") 
+				Zod.values.moved_to = false;
+			
 		}
 		
 		
