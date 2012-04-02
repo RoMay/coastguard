@@ -8,7 +8,6 @@
 			
 		};
 		
-		
 		var objects = { // collector of static images specified from the markup
 			clouds: $("img.clouds"),
 			balloons: $("img.balloons"),
