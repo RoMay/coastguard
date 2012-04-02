@@ -1,8 +1,8 @@
-
 		var values = { // static values used as a predefined configuration 
 			zodControllArea: [0, 0],
 			horizont: view.bounds.height/3,
 			skyGradient: new Gradient(["#729FCF", "#97E1FC"]),
+			seeGradient: new Gradient(["#91cde0", "#4a8bcc"]),
 			cloudsGroup: false,
 			balloonsGroup: false
 			
@@ -81,7 +81,7 @@
 			},
 			
 			moveObjectOnLine: function (obj, direction){
-				var step = 10;
+				var step = 1;
 				
 				if(direction == "left")
 					obj.position.x -= step;
@@ -93,23 +93,33 @@
 		};
 		
 		
-		
-		
-		
-		var sky, zod, zodGround, baza, bazaGround, islandGround;
+		var sky, see, zod, zodGround, baza, bazaGround, islandGround;
 		
 		var clouds = [], balloons = [], ships = [], zodArea = [], bazaArea = [];//, zodControllArea = [0, 0]; 
 		
-		//var values.horizont = view.bounds.height/3 
 		
-		//sky = new Path.Rectangle(0, [view.bounds.width, values.horizont])
-		
-		var Sky = {
-			background: function(gradientColor){
-				skyGradientColor = gradientColor || new GradientColor(values.skyGradient, [0, 0], [0, 300])
-				var sky = new Path.Rectangle(0, [view.bounds.width, values.horizont])
-				sky.fillColor = skyGradientColor; 
+		var Background = {
+			sky: function(skyColor){
+				skyGradientColor = skyColor || new GradientColor(values.skyGradient, [0, 0], [0, 300])
+				
+				sky = new Path.Rectangle(0, [view.bounds.width, values.horizont])
+				sky.fillColor = skyGradientColor;
+				
+			},
 			
+			see: function(seeColor){
+				seeGradientColor = seeColor || new GradientColor(values.seeGradient, [0, 100], [0, 700])
+				
+				see = new Path.Rectangle([0, values.horizont], [view.bounds.width, view.bounds.height])
+				see.fillColor = seeGradientColor;
+				
+				if(!values.seeGroup){
+						seeGroup = new Group();
+						seeGroup.clipMask = false;
+						
+						values.seeGroup = true;
+				}	
+
 			},
 			
 			clouds: function(limit){
@@ -239,15 +249,7 @@
 				return x;
 			},
 			
-			init: function(options){
-				/*
-				var center = new Point(100, 100);
-				var sides = 3;
-				var radius = 50;
-				var triangle = new Path.RegularPolygon(center, sides, radius);
-				triangle.fillColor = 'black';
-				*/
-				
+			init: function(){
 				var segments = this.defaults.segments;
 				var path = new Path(segments);
 				path.closed = true;
@@ -286,11 +288,12 @@
 				var inst = Methods.toPutInstance(object, scale, position);
 				
 				Methods.toReflectObject(inst, 0.1, 0, 0.7)
-				flag = Flag.init();
+
+				//flag = Flag.init();
 			},
 			
 			animate: function(){
-				flag.position.x -= 1
+				//flag.position.x -= 1
 			},
 			
 			init: function(){
@@ -329,7 +332,9 @@
 				var scale = scale || this.defaults.objScale;
 				var position =  position || this.defaults.objPosition;
 				var inst = Methods.toPutInstance(object, scale, position);
-				
+
+				this.defaults.gun = inst;
+
 				return inst;
 				
 				//zodGroup.addChild(zodI)
@@ -340,33 +345,47 @@
 		}
 		
 
-		var shipsGroup = new Group();
-		//ships.clipMask = false;
-		
-		var zodAreaGroup = new Group();
-		zodAreaGroup.clipMask = false;
-		
-		var zodGroup = new Group();
-		zodGroup.clipMask = false;
-		
+
 
 		function drawShot(){
 			
 		}
 		
-		
 		var Scene = new function(){
 			
+			var staticElems = new Group();
+			
+			
+			
+			
 			return {
+				update: function(){
+					cloudsGroup.position.x -=  0.2;
+			
+					balloonsGroup.position.x -=  0.15;
+					
+					shipsGroup.position.x -= 2
+				
+				},
+				
 				init: function(){
-					Sky.background();
-					Sky.clouds();
-					Sky.balloons();
+					Background.sky();
+					Background.see();
+					Background.clouds();
+					Background.balloons();
 					Baza.ground();
 					Baza.tower();
 					Zod.ground();
 					Zod.gun();
 					
+					shipsGroup = new Group();
+					//ships.clipMask = false;
+					zodAreaGroup = new Group();
+					zodAreaGroup.clipMask = false;
+					
+					zodGroup = new Group();
+					zodGroup.clipMask = false;
+			
 					
 					$(objects.ships).each(function(){
 						Methods.toRasterSymbol($(this).attr("id"), ships)
@@ -374,21 +393,13 @@
 						
 					})
 					
+					
 					Island.init()
-					
-					
 					
 					var shipsNumber = 20
 					var sDist = view.bounds.width/2
 					Methods.toMultiplyObjects(ships, shipsNumber, shipsGroup, sDist, [0.05, 0.05]);
 				
-					/*
-					$(shipsGroup.children).each(function(i){
-						
-						Methods.toReflectObject(shipsGroup.children[i])
-						
-					})
-					*/
 					
 					shipsGroup.position.x += view.bounds.width
 					shipsGroup.position.y = values.horizont+100
@@ -416,21 +427,10 @@
 			})
 		*/	
 			
-			cloudsGroup.position.x -=  0.2;
+
+//			Baza.animate()
 			
-			balloonsGroup.position.x -=  0.15;
-			
-			shipsGroup.position.x -= 10
-			/*
-			$(shipsGroup.children).each(function(i){
-					shipsGroup.children[i].rotate(i)
-			})
-			*/
-			
-			Baza.animate()
-			//flag.position.x -= 1
-			
-			
+			Scene.update();
 			
 			
 		}
@@ -440,18 +440,15 @@
 				//layer.selected = !layer.selected;
 				
 				drawShot()
-				
-				console.log("space")
-				
+
+				debug.toPrint("space");
+						
 				return false;
 			}
 			
 			if (event.key == "left" || event.key == "right") {
 				
-				//if(zodGroundI<)
-				
-				
-				//Methods.moveObjectOnLine(zodGroup, event.key)
+				Methods.moveObjectOnLine(Zod.defaults.gun, event.key)
 				
 				return false;
 			}
@@ -460,7 +457,7 @@
 		
 		function onKeyUp(event) {
 			if (event.key == 'space') {
-				//layer.selected = !layer.selected;
+				
 				
 				drawShot()
 				
@@ -471,14 +468,16 @@
 			
 			if (event.key == "left") {
 				
-				console.log("leftUP")
+
+				debug.toPrint("leftUP")
+
 				
 				return false;
 			}
 			
 			if (event.key == "right") {
 				
-				console.log("right")
+				debug.toPrint("rightUP")
 				
 				return false;
 			}

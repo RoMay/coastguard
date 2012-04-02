@@ -14,6 +14,7 @@
 	.canvasWrapper {
 		width:100%;
 		height:100%;
+		max-height:800px;
 		position:relative;
 		border: 1px solid #e6e6e6;
 	}
@@ -30,7 +31,8 @@
 	}
 
 	.canvasWrapper #a-canvas {
-		background:#729FCF;
+
+		/*background:#729FCF;*/
 		
 	}
 	
