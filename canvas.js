@@ -47,7 +47,7 @@
 				
 			},
 			
-			toReflectObject: function (obj, opacity, distance, scaleY, returns){
+			toReflectObject: function (obj, opacity, distance, scaleY, group){
 				var reflection = obj.clone()
 				
 				reflection.position.y += reflection.bounds.height+ (distance ? distance : 1)
@@ -56,9 +56,9 @@
 				
 				//reflection.transform(new Matrix(reflection.matrix))
 				
-				if(returns){
+				if(group){
 				
-					return returns;
+					return group.addChild(reflection);
 					
 				}	
 				else
@@ -83,6 +83,8 @@
 					group.addChild(instance);
 					
 				}
+				
+				return group
 				
 			},
 			
@@ -398,6 +400,11 @@
 					var shipA = ship.create("a");
 					
 					Methods.toMultiplyObjects(shipA, shipsNumber, shipsGroup, sDist, [1, 1]);
+					
+					$(shipsGroup.children).each(function(i){
+						Methods.toReflectObject(shipsGroup.children[i], 0.1, 0, 0.7, shipsGroup)
+						
+					})
 					
 					
 					shipsGroup.position.x += view.bounds.width;
