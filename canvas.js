@@ -69,8 +69,15 @@
 				var objectsAmount = objects.length
 				
 				for (var j = 0; j < amount; j++) {
-					var style = Math.floor(Math.random() * objectsAmount);
-					var instance = objects[style].place();
+					if(objectsAmount>0){
+						var style = Math.floor(Math.random() * objectsAmount);
+						var instance = objects[style].place();
+					}
+					else{
+						
+						var instance = objects.place();
+					}
+					
 					instance.position =  new Point(distance * j+1 + Math.random() * 300, 30 + Math.random() * 100);
 					instance.scale(scale[0], scale[1]);
 					group.addChild(instance);
@@ -350,6 +357,65 @@
 			
 		};
 		
+		var Animals = new function(){
+		
+			var ship = {
+					styleA:{
+						fillColor: 'white',
+						strokeColor: 'red'
+					},
+					
+					styleB:{
+						fillColor: 'black',
+						strokeColor: 'white'
+					},
+					
+					create: function(style){
+						var path = new Path.Star(new Point(0, 0), 6, 5, 13);
+						
+						if(style=="a") path.style = this.styleA;
+						if(style=="b") path.style = this.styleB;
+						
+						return new Symbol(path);
+						
+					},
+					
+					remove: function(obj){
+				
+					}
+				
+		
+					
+					
+			};
+			
+			return {
+
+				draw_ships: function(){
+					shipsGroup = new Group();
+					var shipsNumber = 20;
+					var sDist = view.bounds.width/10;
+					var shipA = ship.create("a");
+					
+					Methods.toMultiplyObjects(shipA, shipsNumber, shipsGroup, sDist, [1, 1]);
+					
+					
+					shipsGroup.position.x += view.bounds.width;
+					shipsGroup.position.y = values.horizont+100;
+				
+				
+				},
+				
+				
+				init: function(){
+					this.draw_ships()
+				}
+			
+			};
+			
+		
+		};
+		
 
 
 
@@ -368,13 +434,15 @@
 				update: function(){
 					cloudsGroup.position.x -=  0.2;
 					balloonsGroup.position.x -=  0.15;
-					shipsGroup.position.x -= 1
+					
+					shipsGroup.position.x -= 3
 					
 					if(Zod.values.moved_to) Zod.move_gun_to();
 				
 				},
 				
 				init: function(){
+					
 					Background.sky();
 					Background.see();
 					Background.clouds();
@@ -383,8 +451,8 @@
 					Baza.tower();
 					Zod.ground();
 					Zod.gun();
+					Animals.init();
 					
-					shipsGroup = new Group();
 					//ships.clipMask = false;
 					zodAreaGroup = new Group();
 					zodAreaGroup.clipMask = false;
@@ -393,22 +461,10 @@
 					zodGroup.clipMask = false;
 			
 					
-					$(objects.ships).each(function(){
-						Methods.toRasterSymbol($(this).attr("id"), ships)
-						
-						
-					})
-					
 					
 					Island.init();
 					
-					var shipsNumber = 20;
-					var sDist = view.bounds.width/2;
-					Methods.toMultiplyObjects(ships, shipsNumber, shipsGroup, sDist, [0.05, 0.05]);
-				
 					
-					shipsGroup.position.x += view.bounds.width;
-					shipsGroup.position.y = values.horizont;
 				}
 			}
 			
