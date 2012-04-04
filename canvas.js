@@ -65,10 +65,26 @@
 					return reflection;
 			},
 			
-			toMultiplyObjects: function (objects, amount, group, distance, scale){
-				var objectsAmount = objects.length
+			toMultiplyObjects: function (objects, options){
+				var objectsAmount = objects.length;
+				var distance = options.distance || 0;
 				
-				for (var j = 0; j < amount; j++) {
+				var position_x = options.position_x || false;
+				var position_y = options.position_y || false;
+				
+				
+				/*
+				var position = {
+					x: function(index, random){
+						return options.position.x || distance * index+1 + random;
+					},
+					y: function(index, random){
+						return options.position.y || distance * index+1 + random;
+					}
+				}
+				*/
+				
+				for (var j = 0; j < options.amount; j++) {
 					if(objectsAmount>0){
 						var style = Math.floor(Math.random() * objectsAmount);
 						var instance = objects[style].place();
@@ -78,13 +94,14 @@
 						var instance = objects.place();
 					}
 					
-					instance.position =  new Point(distance * j+1 + Math.random() * 300, 30 + Math.random() * 100);
-					instance.scale(scale[0], scale[1]);
-					group.addChild(instance);
+					instance.position =  new Point(position_x ? position_x : (distance * j+1 + Math.random() * 300), position_y ? position_y : (30 + Math.random() * 100));
+					
+					if(options.scale) instance.scale(options.scale[0], options.scale[1]);
+					if(options.group) options.group.addChild(instance);
 					
 				}
 				
-				return group
+				if(options.group) return options.group;
 				
 			},
 			
@@ -133,7 +150,7 @@
 			clouds: function(limit){
 					
 					var cloudsNumber = limit || 15;
-					var cDist = view.bounds.width / cloudsNumber;
+					var cDist = view.bounds.width / cloudsNumber*2;
 					
 					$(objects.clouds).each(function(){
 						Methods.toRasterSymbol($(this).attr("id"), clouds);
@@ -148,7 +165,7 @@
 					}	
 					
 					
-					Methods.toMultiplyObjects(clouds, cloudsNumber, cloudsGroup, cDist, [0.6, 0.6]);
+					Methods.toMultiplyObjects(clouds, {amount: cloudsNumber, group: cloudsGroup, distance: cDist, scale: [0.6, 0.6]});
 			},
 			
 			balloons: function(limit){
@@ -170,7 +187,7 @@
 						values.balloonsGroup = true;
 					}	
 							
-					Methods.toMultiplyObjects(balloons, balloonsNumber, balloonsGroup, bDist/10, [0.6, 0.6]);
+					Methods.toMultiplyObjects(balloons, {amount: balloonsNumber, group: balloonsGroup, distance: bDist/10, scale: [0.6, 0.6]});
 			
 			}
 			
@@ -399,16 +416,20 @@
 					var sDist = view.bounds.width/10;
 					var shipA = ship.create("a");
 					
-					Methods.toMultiplyObjects(shipA, shipsNumber, shipsGroup, sDist, [1, 1]);
+					Methods.toMultiplyObjects(shipA, {amount: shipsNumber, group: shipsGroup, distance: sDist, position_y:values.horizont+40, scale: [0.5, 0.5]});
+					
+					var shipB = ship.create("b");
+					
+					Methods.toMultiplyObjects(shipB, {amount: shipsNumber, group: shipsGroup, distance: sDist, position_y:values.horizont+20, scale: [0.2, 0.2]});
 					
 					$(shipsGroup.children).each(function(i){
-						Methods.toReflectObject(shipsGroup.children[i], 0.1, 0, 0.7, shipsGroup)
+						Methods.toReflectObject(shipsGroup.children[i], 0.1, 0, 0.5, shipsGroup)
 						
 					})
 					
 					
 					shipsGroup.position.x += view.bounds.width;
-					shipsGroup.position.y = values.horizont+100;
+					//shipsGroup.position.y = values.horizont;
 				
 				
 				},
