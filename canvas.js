@@ -21,6 +21,7 @@
 			
 		};
 		
+		
 		var Methods = { // shared help methods 
 			toRasterSymbol: function (obj, returns){
 			
@@ -116,6 +117,24 @@
 			}
 	
 		};
+		
+		
+		var Game = new function(){
+			var defaults = {
+			  animal_ships: [
+				{amount:8, distance: view.bounds.width/10, position_y: values.horizont+40, scale: [0.5, 0.5], type: 1}, 
+				{amount:5, distance: view.bounds.width/5, position_y: values.horizont+20, scale: [0.2, 0.2], type: 2}
+			  ]			  
+			};
+			
+			return {
+				current_level: defaults,
+				reset_to_defaults: function(){
+					this.current_level = defaults;
+				}
+			}
+		}
+		
 		
 		
 		var sky, see, zod, zodGround, baza, bazaGround, islandGround;
@@ -392,51 +411,52 @@
 					create: function(style){
 						var path = new Path.Star(new Point(0, 0), 6, 5, 13);
 						
-						if(style=="a") path.style = this.styleA;
-						if(style=="b") path.style = this.styleB;
+						if(style=="1") path.style = this.styleA;
+						if(style=="2") path.style = this.styleB;						
+						//path.name = "ship_"+style;
+						//console.log(path)
 						
-						return new Symbol(path);
+						var symbol = new Symbol(path);
+						symbol.name = "ship_"+style;
+						
+						return symbol;
 						
 					},
 					
 					remove: function(obj){
 				
 					}
-				
-		
 					
 					
 			};
 			
 			return {
 
-				draw_ships: function(){
+				draw_ships: function(params){
 					shipsGroup = new Group();
-					var shipsNumber = 20;
-					var sDist = view.bounds.width/10;
-					var shipA = ship.create("a");
 					
-					Methods.toMultiplyObjects(shipA, {amount: shipsNumber, group: shipsGroup, distance: sDist, position_y:values.horizont+40, scale: [0.5, 0.5]});
-					
-					var shipB = ship.create("b");
-					
-					Methods.toMultiplyObjects(shipB, {amount: shipsNumber, group: shipsGroup, distance: sDist, position_y:values.horizont+20, scale: [0.2, 0.2]});
+					$(params).each(function(i, e){
+					  Methods.toMultiplyObjects(ship.create(e.type), {amount: e.amount, group: shipsGroup, distance: e.distance, position_y:e.position_y, scale: e.scale});		
+					  
+					})
 					
 					$(shipsGroup.children).each(function(i){
+						
 						Methods.toReflectObject(shipsGroup.children[i], 0.1, 0, 0.5, shipsGroup)
 						
-					})
+					});
 					
 					
 					shipsGroup.position.x += view.bounds.width;
 					//shipsGroup.position.y = values.horizont;
-				
+					console.log(shipsGroup.children[0]);
 				
 				},
 				
 				
 				init: function(){
-					this.draw_ships()
+						this.draw_ships(Game.current_level.animal_ships);
+						
 				}
 			
 			};
