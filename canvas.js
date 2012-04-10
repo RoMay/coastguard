@@ -98,7 +98,10 @@
 					instance.position =  new Point(position_x ? position_x : (distance * j+1 + Math.random() * 300), position_y ? position_y : (30 + Math.random() * 100));
 					
 					if(options.scale) instance.scale(options.scale[0], options.scale[1]);
-					if(options.group) options.group.addChild(instance);
+					if(options.group){ 
+				//		instance.name = "ship_";
+						options.group.addChild(instance);
+					}	
 					
 				}
 				
@@ -431,26 +434,30 @@
 			};
 			
 			return {
-
+				shipsGroups: [],
+				
 				draw_ships: function(params){
 					shipsGroup = new Group();
 					
 					$(params).each(function(i, e){
-					  Methods.toMultiplyObjects(ship.create(e.type), {amount: e.amount, group: shipsGroup, distance: e.distance, position_y:e.position_y, scale: e.scale});		
+					  
+					  Animals.shipsGroups[i] = new Group();
+					  
+					  Methods.toMultiplyObjects(ship.create(e.type), {amount: e.amount, group: Animals.shipsGroups[i], distance: e.distance, position_y:e.position_y, scale: e.scale});	
+					 
+   					  shipsGroup.addChild(Animals.shipsGroups[i])
+
+
+					  $(Animals.shipsGroups[i].children).each(function(a){
+						
+							Methods.toReflectObject(Animals.shipsGroups[i].children[a], 0.1, 0, 0.5, Animals.shipsGroups[i])
+							
+						});
 					  
 					})
-					
-					$(shipsGroup.children).each(function(i){
-						
-						Methods.toReflectObject(shipsGroup.children[i], 0.1, 0, 0.5, shipsGroup)
-						
-					});
-					
-					
 					shipsGroup.position.x += view.bounds.width;
-					//shipsGroup.position.y = values.horizont;
-					console.log(shipsGroup.children[0]);
-				
+					console.log(shipsGroup)
+					
 				},
 				
 				
