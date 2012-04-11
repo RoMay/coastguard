@@ -348,6 +348,40 @@
 			}
 		};
 		
+		
+
+
+		var Shot = {
+			values: { 
+				moved_to: 0
+			},
+			
+			create: function(params){
+				var topLeft = new Point(params.position.x-3, params.position.y);
+				var size = new Size(6, 8);
+				var rectangle = new Rectangle(topLeft, size);
+				var path = new Path.Oval(rectangle);
+				path.fillColor = '#ebebeb';
+				path.opacity = .99
+				
+				
+				var s = new Symbol(path);
+				var instance = new PlacedSymbol(s);
+				instance.position.x = params.position.x-5//, y: params.position.y};
+				instance.position.y = params.position.y;
+				instance.matrix.scaleY = "-"+instance.matrix.scaleY*1.3
+				instance.fillColor = '#ebebeb';
+				console.log(instance);
+				return instance;
+			},
+			
+			remove: function(){
+			
+			}
+			
+		}
+		
+		
 		var Zod = {
 			defaults: {
 				obj: Methods.toRasterSymbol($(objects.zod).attr("id")),
@@ -363,11 +397,44 @@
 				moved_to: false
 			},
 			
+			shotsGroups: [],
+				
 			move_gun_to: function(){
 					
 					Methods.moveObjectOnLine(this.defaults.gun, this.values.moved_to);
+					
+			},
+						
+			move_shots_to: function(){
+			
+				$(Zod.shotsGroups).each(function(i, e){
+					
+					if(Zod.shotsGroups[i].position.y>values.horizont){
+						Zod.shotsGroups[i].position.y -= 5;
+						Zod.shotsGroups[i].scale(0.98)
+					}
+					else{
+						Zod.shotsGroups[i].visible = false;
+						//Zod.shotsGroups.splice(i, 1)
+						//i--;
+						return true;
+						//Shot.values.moved_to -=1;
+					}
+					
+					
+					
+					
+				});
+			
+				//Shot.values.moved_to--
 			},
 			
+			fire_shot: function(){
+				this.shotsGroups[Shot.values.moved_to] = Shot.create({position: {x:Zod.defaults.gun.bounds.x+(Zod.defaults.gun.bounds.width/2), y:Zod.defaults.gun.bounds.y-100 }});
+				Shot.values.moved_to++;
+				
+			},
+	
 			ground: function(object, scale, position){
 				
 				var object = object || this.defaults.ground;
@@ -390,15 +457,15 @@
 				var inst = Methods.toPutInstance(object, scale, position);
 
 				this.defaults.gun = inst;
-
-				return inst;
+				console.log(Zod.defaults.gun.bounds.x+(Zod.defaults.gun.bounds.width/2))
+				return this.defaults.gun;
 				
 			}
 			
 			
 		};
 		
-		var Animals = new function(){
+		var Enemies = new function(){
 		
 			var ship = {
 					styleA:{
@@ -442,29 +509,29 @@
 					
 					$(params).each(function(i, e){
 					  
-					  Animals.shipsGroups[i] = new Group();
+					  Enemies.shipsGroups[i] = new Group();
 					  
-					  Methods.toMultiplyObjects(ship.create(e.type), {amount: e.amount, group: Animals.shipsGroups[i], distance: e.distance, position_y:e.position_y, scale: e.scale});	
+					  Methods.toMultiplyObjects(ship.create(e.type), {amount: e.amount, group: Enemies.shipsGroups[i], distance: e.distance, position_y:e.position_y, scale: e.scale});	
 					 
-   					  shipsGroup.addChild(Animals.shipsGroups[i])
+   					  shipsGroup.addChild(Enemies.shipsGroups[i])
 
 
-					  $(Animals.shipsGroups[i].children).each(function(a){
+					  $(Enemies.shipsGroups[i].children).each(function(a){
 						
-							Methods.toReflectObject(Animals.shipsGroups[i].children[a], 0.1, 0, 0.5, Animals.shipsGroups[i])
+							Methods.toReflectObject(Enemies.shipsGroups[i].children[a], 0.1, 0, 0.5, Enemies.shipsGroups[i])
 							
 						});
 					  
 					})
 					shipsGroup.position.x += view.bounds.width;
-					//console.log(Animals.shipsGroups)
+					//console.log(Enemies.shipsGroups)
 					
 				},
 				
 				move_ships_to: function(){
 				
-					$(Animals.shipsGroups).each(function(i, e){
-						Animals.shipsGroups[i].position.x -= Game.current_level.animal_ships[i].speed;
+					$(Enemies.shipsGroups).each(function(i, e){
+						Enemies.shipsGroups[i].position.x -= Game.current_level.animal_ships[i].speed;
 					});
 					
 				},
@@ -480,31 +547,6 @@
 		};
 		
 
-
-
-		var Shot = new function (){
-			values: { 
-				moved_to: 0;
-			},
-			
-			group: [],
-			
-			create: function(){
-				var topLeft = new Point(100, 100);
-				var size = new Size(150, 100);
-				var rectangle = new Rectangle(topLeft, size);
-				var path = new Path.Oval(rectangle);
-				path.fillColor = 'white';
-				
-				return path;
-			},
-			
-			remove: function(){
-			
-			}
-			
-		}
-		
 		var Scene = new function(){
 			
 			var staticElems = new Group();
@@ -517,9 +559,9 @@
 					cloudsGroup.position.x -=  0.2;
 					balloonsGroup.position.x -=  0.15;
 					
-					Animals.move_ships_to();
+					Enemies.move_ships_to();
 					
-					if(Shot.values.moved_to) Shot.move_shots_to();
+					if(Zod.shotsGroups.length) Zod.move_shots_to();
 					
 					if(Zod.values.moved_to) Zod.move_gun_to();
 				
@@ -531,8 +573,8 @@
 					Background.see();
 					Background.clouds();
 					Background.balloons();
-					Background.clouds();
-					Animals.init();
+					//Background.clouds();
+					Enemies.init();
 					Baza.ground();
 					Baza.tower();
 					Zod.ground();
@@ -607,10 +649,9 @@
 		function onKeyUp(event) {
 			if (event.key == 'space') {
 				
-				
-				drawShot()
-				
-				console.log("space")
+				Zod.fire_shot()
+				console.log(Zod.shotsGroups.length)
+			//	console.log(Zod.defaults.gun.bounds.x+(Zod.defaults.gun.bounds.width/2))
 				
 				return false;
 			}
