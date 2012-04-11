@@ -95,7 +95,7 @@
 						var instance = objects.place();
 					}
 					
-					instance.position =  new Point(position_x ? position_x : (distance * j+1 + Math.random() * 300), position_y ? position_y : (30 + Math.random() * 100));
+					instance.position =  new Point(position_x ? position_x : ((distance * j+1) + (Math.random() * 100)), position_y ? position_y : (30 + Math.random() * 100));
 					
 					if(options.scale) instance.scale(options.scale[0], options.scale[1]);
 					if(options.group){ 
@@ -126,7 +126,7 @@
 			var defaults = {
 			  animal_ships: [
 				{amount: 8, distance: view.bounds.width/10, position_y: values.horizont+40, scale: [0.5, 0.5], type: 1, speed: 3}, 
-				{amount: 5, distance: view.bounds.width/5, position_y: values.horizont+20, scale: [0.2, 0.2], type: 2, speed: 2}
+				{amount: 5, distance: view.bounds.width*10, position_y: values.horizont+20, scale: [0.2, 0.2], type: 2, speed: 2}
 			  ]			  
 			};
 			
@@ -414,9 +414,15 @@
 					create: function(style){
 						var path = new Path.Star(new Point(0, 0), 6, 5, 13);
 						
-						if(style=="1") path.style = this.styleA;
-						if(style=="2") path.style = this.styleB;						
-					
+						switch(style){
+							case 1:
+							path.style = this.styleA;
+							break;
+							case 2:
+							path.style = this.styleB;						
+							break;
+						}
+						
 						return new Symbol(path);
 						
 					},
@@ -476,7 +482,26 @@
 
 
 
-		function drawShot(){
+		var Shot = new function (){
+			values: { 
+				moved_to: 0;
+			},
+			
+			group: [],
+			
+			create: function(){
+				var topLeft = new Point(100, 100);
+				var size = new Size(150, 100);
+				var rectangle = new Rectangle(topLeft, size);
+				var path = new Path.Oval(rectangle);
+				path.fillColor = 'white';
+				
+				return path;
+			},
+			
+			remove: function(){
+			
+			}
 			
 		}
 		
@@ -492,9 +517,9 @@
 					cloudsGroup.position.x -=  0.2;
 					balloonsGroup.position.x -=  0.15;
 					
-					//shipsGroup.position.x -= 3
-					//console.log(Animals.shipsGroups.length)
 					Animals.move_ships_to();
+					
+					if(Shot.values.moved_to) Shot.move_shots_to();
 					
 					if(Zod.values.moved_to) Zod.move_gun_to();
 				
@@ -506,6 +531,7 @@
 					Background.see();
 					Background.clouds();
 					Background.balloons();
+					Background.clouds();
 					Animals.init();
 					Baza.ground();
 					Baza.tower();
@@ -543,8 +569,6 @@
 		
 		
 		function onFrame(event){
-		
-//			Baza.animate()
 			
 			Scene.update();
 			
