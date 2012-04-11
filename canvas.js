@@ -125,8 +125,8 @@
 		var Game = new function(){
 			var defaults = {
 			  animal_ships: [
-				{amount:8, distance: view.bounds.width/10, position_y: values.horizont+40, scale: [0.5, 0.5], type: 1}, 
-				{amount:5, distance: view.bounds.width/5, position_y: values.horizont+20, scale: [0.2, 0.2], type: 2}
+				{amount: 8, distance: view.bounds.width/10, position_y: values.horizont+40, scale: [0.5, 0.5], type: 1, speed: 3}, 
+				{amount: 5, distance: view.bounds.width/5, position_y: values.horizont+20, scale: [0.2, 0.2], type: 2, speed: 2}
 			  ]			  
 			};
 			
@@ -416,13 +416,8 @@
 						
 						if(style=="1") path.style = this.styleA;
 						if(style=="2") path.style = this.styleB;						
-						//path.name = "ship_"+style;
-						//console.log(path)
-						
-						var symbol = new Symbol(path);
-						symbol.name = "ship_"+style;
-						
-						return symbol;
+					
+						return new Symbol(path);
 						
 					},
 					
@@ -456,10 +451,17 @@
 					  
 					})
 					shipsGroup.position.x += view.bounds.width;
-					console.log(shipsGroup)
+					//console.log(Animals.shipsGroups)
 					
 				},
 				
+				move_ships_to: function(){
+				
+					$(Animals.shipsGroups).each(function(i, e){
+						Animals.shipsGroups[i].position.x -= Game.current_level.animal_ships[i].speed;
+					});
+					
+				},
 				
 				init: function(){
 						this.draw_ships(Game.current_level.animal_ships);
@@ -490,7 +492,9 @@
 					cloudsGroup.position.x -=  0.2;
 					balloonsGroup.position.x -=  0.15;
 					
-					shipsGroup.position.x -= 3
+					//shipsGroup.position.x -= 3
+					//console.log(Animals.shipsGroups.length)
+					Animals.move_ships_to();
 					
 					if(Zod.values.moved_to) Zod.move_gun_to();
 				
@@ -502,11 +506,12 @@
 					Background.see();
 					Background.clouds();
 					Background.balloons();
+					Animals.init();
 					Baza.ground();
 					Baza.tower();
 					Zod.ground();
 					Zod.gun();
-					Animals.init();
+					
 					
 					//ships.clipMask = false;
 					zodAreaGroup = new Group();
