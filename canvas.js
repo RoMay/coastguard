@@ -416,18 +416,22 @@
 						Zod.shotsGroups[i].scale(0.98);
 						
 						$(shipsGroup.children[0].children).each(function(ei, ee){
-							if(ee.bounds.intersects(e.bounds)) {
-								//ee.visible = false;
-								//ee.remove();
-								
+							if(shipsGroup.children[0].children[ei].handleBounds.intersects(Zod.shotsGroups[i].handleBounds)) {
 								console.log("got it");
-								Zod.shotsGroups[i].visible = false;
-								Zod.shotsGroups[i].remove();
 								
+								//shipsGroup.children[0].children[ei].remove();
+								shipsGroup.children[0].children[ei].visible = false;
+								shipsGroup.children[0].children[ei].opacity = 0
+								
+								Zod.shotsGroups[i].visible = false;
+								//Zod.shotsGroups[i].remove();
+								
+								return true;
+								/*
 								$(Zod.values.hidden_shots).each(function(hi, he){
 									//Zod.shotsGroups.splice(Zod.values.hidden_shots[he], 1);
 								})
-								
+								*/
 								//console.log(Zod.shotsGroups.length +" -- "+ Zod.values.hidden_shots);
 								
 								
