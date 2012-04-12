@@ -371,7 +371,7 @@
 				instance.position.y = params.position.y;
 				instance.matrix.scaleY = "-"+instance.matrix.scaleY*1.3
 				instance.fillColor = '#ebebeb';
-				console.log(instance);
+				//console.log(instance);
 				return instance;
 			},
 			
@@ -411,15 +411,26 @@
 				$(Zod.shotsGroups).each(function(i, e){
 					if(this.visible == false) return true;
 					
-					if(Zod.shotsGroups[i].position.y>values.horizont+10){
+					if(Zod.shotsGroups[i].position.y>values.horizont+5){
 						Zod.shotsGroups[i].position.y -= 5;
 						Zod.shotsGroups[i].scale(0.98);
 						
-						$(shipsGroup.children).each(function(ei, ee){
+						$(shipsGroup.children[0].children).each(function(ei, ee){
 							if(ee.bounds.intersects(e.bounds)) {
 								//ee.visible = false;
 								//ee.remove();
-								console.log("got it")
+								
+								console.log("got it");
+								Zod.shotsGroups[i].visible = false;
+								Zod.shotsGroups[i].remove();
+								
+								$(Zod.values.hidden_shots).each(function(hi, he){
+									//Zod.shotsGroups.splice(Zod.values.hidden_shots[he], 1);
+								})
+								
+								//console.log(Zod.shotsGroups.length +" -- "+ Zod.values.hidden_shots);
+								
+								
 							}
 						});
 						
@@ -427,8 +438,10 @@
 					else{
 						this.visible = false;
 						this.remove();
-						console.log(Zod.shotsGroups.length + " - " + Zod.values.hidden_shots.length + " - " + Shot.values.moved_to)
+						//console.log(Zod.shotsGroups.length + " - " + Zod.values.hidden_shots.length + " - " + Shot.values.moved_to)
 						//Zod.shotsGroups.splice(i)
+						Zod.values.hidden_shots.push(i);
+						//console.log(Zod.values.hidden_shots);
 						return true;
 						
 					}
@@ -442,8 +455,19 @@
 			},
 			
 			fire_shot: function(){
-				this.shotsGroups[Shot.values.moved_to] = Shot.create({position: {x:Zod.defaults.gun.bounds.x+(Zod.defaults.gun.bounds.width/2), y:Zod.defaults.gun.bounds.y-100 }});
-				Shot.values.moved_to +=1;
+				
+				if(Zod.values.hidden_shots.length){
+					$(Zod.values.hidden_shots).each(function(hi, he){
+						Zod.shotsGroups.splice(Zod.values.hidden_shots[hi], 1);
+					})
+					Zod.values.hidden_shots.length = 0;
+					//Shot.values.moved_to = 0;
+
+				}
+				
+				this.shotsGroups.push(Shot.create({position: {x:Zod.defaults.gun.bounds.x+(Zod.defaults.gun.bounds.width/2), y:Zod.defaults.gun.bounds.y-100 }}));
+				//Shot.values.moved_to +=1;
+				
 				
 			},
 	
@@ -468,8 +492,7 @@
 				var position =  position || this.defaults.objPosition;
 				var inst = Methods.toPutInstance(object, scale, position);
 
-				this.defaults.gun = inst;
-				console.log(Zod.defaults.gun.bounds.x+(Zod.defaults.gun.bounds.width/2))
+				this.defaults.gun = inst;				
 				return this.defaults.gun;
 				
 			}
@@ -663,7 +686,7 @@
 			if (event.key == 'space') {
 				
 				Zod.fire_shot()
-				console.log(Zod.shotsGroups.length)
+				//console.log(Zod.shotsGroups.length)
 			//	console.log(Zod.defaults.gun.bounds.x+(Zod.defaults.gun.bounds.width/2))
 				
 				return false;
