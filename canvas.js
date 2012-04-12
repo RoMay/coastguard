@@ -394,7 +394,8 @@
 			},
 			
 			values: { 
-				moved_to: false
+				moved_to: false,
+				hidden_shots: []
 			},
 			
 			shotsGroups: [],
@@ -408,17 +409,19 @@
 			move_shots_to: function(){
 			
 				$(Zod.shotsGroups).each(function(i, e){
+					if(this.visible == false) return true;
 					
-					if(Zod.shotsGroups[i].position.y>values.horizont){
+					if(Zod.shotsGroups[i].position.y>values.horizont+10){
 						Zod.shotsGroups[i].position.y -= 5;
 						Zod.shotsGroups[i].scale(0.98)
 					}
 					else{
-						Zod.shotsGroups[i].visible = false;
-						//Zod.shotsGroups.splice(i, 1)
-						//i--;
+						this.visible = false;
+						this.remove();
+						console.log(Zod.shotsGroups.length + " - " + Zod.values.hidden_shots.length + " - " + Shot.values.moved_to)
+						//Zod.shotsGroups.splice(i)
 						return true;
-						//Shot.values.moved_to -=1;
+						
 					}
 					
 					
@@ -431,7 +434,7 @@
 			
 			fire_shot: function(){
 				this.shotsGroups[Shot.values.moved_to] = Shot.create({position: {x:Zod.defaults.gun.bounds.x+(Zod.defaults.gun.bounds.width/2), y:Zod.defaults.gun.bounds.y-100 }});
-				Shot.values.moved_to++;
+				Shot.values.moved_to +=1;
 				
 			},
 	
@@ -562,6 +565,7 @@
 					Enemies.move_ships_to();
 					
 					if(Zod.shotsGroups.length) Zod.move_shots_to();
+					//console.log(Shot.values.moved_to);
 					
 					if(Zod.values.moved_to) Zod.move_gun_to();
 				
