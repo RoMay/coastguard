@@ -125,7 +125,7 @@
 		var Game = new function(){
 			var defaults = {
 			  animal_ships: [
-				{amount: 15, distance: view.bounds.width/10, position_y: values.horizont+40, scale: [0.5, 0.5], type: 1, speed: 2}, 
+				{amount: 10, distance: view.bounds.width/7, position_y: values.horizont+40, scale: [0.5, 0.5], type: 1, speed: 2}, 
 				{amount: 5, distance: view.bounds.width/5, position_y: values.horizont+20, scale: [0.2, 0.2], type: 2, speed: 1}
 			  ]			  
 			};
@@ -412,7 +412,7 @@
 					if(this.visible == false) return true;
 					
 					if(Zod.shotsGroups[i].position.y>values.horizont+5){
-						Zod.shotsGroups[i].position.y -= 5;
+						Zod.shotsGroups[i].position.y -= 5*0.8;
 						Zod.shotsGroups[i].scale(0.98);
 						
 						$(shipsGroup.children[0].children).each(function(ei, ee){
@@ -421,7 +421,7 @@
 								
 								//shipsGroup.children[0].children[ei].remove();
 								shipsGroup.children[0].children[ei].visible = false;
-								shipsGroup.children[0].children[ei].opacity = 0
+								//shipsGroup.children[0].children[ei].opacity = 0
 								
 								Zod.shotsGroups[i].visible = false;
 								//Zod.shotsGroups[i].remove();
@@ -508,18 +508,19 @@
 		
 			var ship = {
 					styleA:{
-						fillColor: 'white',
-						strokeColor: 'red'
+						fillColor: '#ebebeb',
+						strokeColor: '#999'
 					},
 					
 					styleB:{
-						fillColor: 'black',
-						strokeColor: 'white'
+						fillColor: '#999',
+						strokeColor: '#333'
 					},
 					
 					create: function(style){
-						var path = new Path.Star(new Point(0, 0), 6, 5, 13);
 						
+						//var path = new Path([new Point(10, 30), new Point(-10, 15), new Point(20, 0), new Point(70, 30)]);
+						var path = new Path([new Point(5, 30), new Point(-5, 20), new Point(20, 23), new Point(30, 10), new Point(45, 23), new Point(60, 23), new Point(50, 30)]);
 						switch(style){
 							case 1:
 							path.style = this.styleA;
@@ -557,7 +558,7 @@
 
 					  $(Enemies.shipsGroups[i].children).each(function(a){
 						
-							Methods.toReflectObject(Enemies.shipsGroups[i].children[a], 0.1, 0, 0.5, Enemies.shipsGroups[i])
+							Methods.toReflectObject(Enemies.shipsGroups[i].children[a], 0.1, -1, 0.5, Enemies.shipsGroups[i])
 							
 						});
 					  
@@ -587,12 +588,7 @@
 		
 
 		var Scene = new function(){
-			
-			var staticElems = new Group();
-			
-			
-			
-			
+		
 			return {
 				update: function(){
 					cloudsGroup.position.x -=  0.2;
@@ -639,23 +635,32 @@
 		}
 		
 		Scene.init();
-	
-		function onMouseDrag(event) {
-			//console.log('You dragged the mouse!');
-		}
-
-		function onMouseUp(event) {
-			//console.log(project.activeLayer.lastChild);
-		}
 		
-		
-		
-		function onFrame(event){
+		function onFrameUni(){
 			
 			Scene.update();
 			
-			
 		}
+		
+		Scene.update();
+	
+		if(jQuery.browser.mozilla){
+			function onFrameLoop(){ 
+				
+				window.setTimeout(function(){
+			
+			 
+					Scene.update();
+					view.draw();
+					onFrameLoop();
+					
+				 }, 1);
+				 
+			}
+			onFrameLoop();
+		}
+		else onFrame = onFrameUni;
+		
 		
 		function onKeyDown(event) {
 			if (event.key == 'space') {
@@ -702,5 +707,15 @@
 				Zod.values.moved_to = false;
 			
 		}
+		
+		
+		function onMouseDrag(event) {
+			//console.log('You dragged the mouse!');
+		}
+
+		function onMouseUp(event) {
+			//console.log(project.activeLayer.lastChild);
+		}
+		
 		
 		
