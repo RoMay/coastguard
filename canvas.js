@@ -109,8 +109,8 @@
 				
 			},
 			
-			moveObjectOnLine: function (obj, direction){
-				var step = 1;
+			moveObjectOnLine: function (obj, direction, step){
+				var step = step || 2;
 				
 				if(direction == "left")
 					obj.position.x -= step;
@@ -125,8 +125,8 @@
 		var Game = new function(){
 			var defaults = {
 			  animal_ships: [
-				{amount: 8, distance: view.bounds.width/10, position_y: values.horizont+40, scale: [0.5, 0.5], type: 1, speed: 3}, 
-				{amount: 5, distance: view.bounds.width*10, position_y: values.horizont+20, scale: [0.2, 0.2], type: 2, speed: 2}
+				{amount: 15, distance: view.bounds.width/10, position_y: values.horizont+40, scale: [0.5, 0.5], type: 1, speed: 2}, 
+				{amount: 5, distance: view.bounds.width/5, position_y: values.horizont+20, scale: [0.2, 0.2], type: 2, speed: 1}
 			  ]			  
 			};
 			
@@ -402,7 +402,7 @@
 				
 			move_gun_to: function(){
 					
-					Methods.moveObjectOnLine(this.defaults.gun, this.values.moved_to);
+					Methods.moveObjectOnLine(this.defaults.gun, this.values.moved_to, 3);
 					
 			},
 						
@@ -413,7 +413,16 @@
 					
 					if(Zod.shotsGroups[i].position.y>values.horizont+10){
 						Zod.shotsGroups[i].position.y -= 5;
-						Zod.shotsGroups[i].scale(0.98)
+						Zod.shotsGroups[i].scale(0.98);
+						
+						$(shipsGroup.children).each(function(ei, ee){
+							if(ee.bounds.intersects(e.bounds)) {
+								//ee.visible = false;
+								//ee.remove();
+								console.log("got it")
+							}
+						});
+						
 					}
 					else{
 						this.visible = false;
