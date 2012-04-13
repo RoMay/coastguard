@@ -390,7 +390,7 @@
 				ground: Methods.toRasterSymbol($(objects.zodGround).attr("id")),
 				groundPosition: {y: view.bounds.height-22, x: view.center.x},
 				groundScale: [1.1, 1.1], // try to make it with {x,y}
-				controllArea: 0
+				controllArea: {}				
 			},
 			
 			values: { 
@@ -401,6 +401,11 @@
 			shotsGroups: [],
 				
 			move_gun_to: function(){
+					
+					if((Zod.values.moved_to == "left" && (Zod.defaults.gun.bounds.x < Zod.defaults.controllArea.min)) || (Zod.values.moved_to == "right" && (Zod.defaults.gun.bounds.x+Zod.defaults.gun.bounds.width > Zod.defaults.controllArea.max))){
+						Zod.values.moved_to = false;
+						return false;
+					}
 					
 					Methods.moveObjectOnLine(this.defaults.gun, this.values.moved_to, 3);
 					
@@ -482,7 +487,7 @@
 				var position =  position || this.defaults.groundPosition;
 				var inst = Methods.toPutInstance(object, scale, position);
 
-				this.defaults.controllArea = [inst.bounds.x, inst.bounds.x+view.bounds.width]
+				this.defaults.controllArea = {min: inst.bounds.x, max: inst.bounds.x+inst.bounds.width}
 				
 				return inst;
 				
@@ -513,7 +518,7 @@
 					},
 					
 					styleB:{
-						fillColor: '#999',
+						fillColor: '#F2CEEB',
 						strokeColor: '#333'
 					},
 					
