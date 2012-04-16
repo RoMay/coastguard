@@ -135,7 +135,7 @@
 					this.current_level = defaults;
 				}
 			}
-		}
+		};
 		
 		
 		
