@@ -54,8 +54,7 @@
 				reflection.position.y += reflection.bounds.height+ (distance ? distance : 1)
 				reflection.matrix.scaleY = "-"+reflection.matrix.scaleY* (scaleY ? scaleY : 1)
 				reflection.opacity = opacity ? opacity : 0.15;
-				
-				//reflection.transform(new Matrix(reflection.matrix))
+				//reflection.fillColor = "red"
 				
 				if(group){
 				
@@ -385,10 +384,10 @@
 		var Zod = {
 			defaults: {
 				obj: Methods.toRasterSymbol($(objects.zod).attr("id")),
-				objPosition: {y: view.bounds.height-30, x: view.center.x},
+				objPosition: {y: view.bounds.height-140, x: view.center.x},
 				objScale: [0.3, 0.4],
 				ground: Methods.toRasterSymbol($(objects.zodGround).attr("id")),
-				groundPosition: {y: view.bounds.height-22, x: view.center.x},
+				groundPosition: {y: view.bounds.height-122, x: view.center.x},
 				groundScale: [1.1, 1.1], // try to make it with {x,y}
 				controllArea: {}				
 			},
@@ -488,7 +487,9 @@
 				var inst = Methods.toPutInstance(object, scale, position);
 
 				this.defaults.controllArea = {min: inst.bounds.x, max: inst.bounds.x+inst.bounds.width}
-				
+				reflection = Methods.toReflectObject(inst, 0.5, -10, 0.5)
+				console.log(reflection.style)
+				reflection.blendMode = 'lighten';
 				return inst;
 				
 				//zodAreaGroup.addChild(zodGroundI)
@@ -619,7 +620,7 @@
 					Baza.ground();
 					Baza.tower();
 					Zod.ground();
-					Zod.gun();
+					//Zod.gun();
 					
 					
 					//ships.clipMask = false;
