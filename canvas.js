@@ -638,7 +638,7 @@
 				}
 			}
 			
-		}
+		};//master
 		
 		Scene.init();
 		
