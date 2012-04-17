@@ -620,7 +620,7 @@
 					Baza.ground();
 					Baza.tower();
 					Zod.ground();
-					//Zod.gun();
+					Zod.gun();
 					
 					
 					//ships.clipMask = false;
