@@ -65,19 +65,6 @@
 
 		        var position_x = options.position_x || false;
 		        var position_y = options.position_y || false;
-
-
-		        /*
-				var position = {
-					x: function(index, random){
-						return options.position.x || distance * index+1 + random;
-					},
-					y: function(index, random){
-						return options.position.y || distance * index+1 + random;
-					}
-				}
-				*/
-
 		        for (var j = 0; j < options.amount; j++) {
 		            if (objectsAmount > 0) {
 		                var style = Math.floor(Math.random() * objectsAmount);
@@ -91,7 +78,6 @@
 
 		            if (options.scale) instance.scale(options.scale[0], options.scale[1]);
 		            if (options.group) {
-		                //		instance.name = "ship_";
 		                options.group.addChild(instance);
 		            }
 
@@ -112,7 +98,7 @@
 		};
 
 
-		var Game = new function () {
+		var Game = new function () { // basic game configuration, level dependencies
 		        var defaults = {
 		            animal_ships: [{
 		                amount: 10,
@@ -122,10 +108,10 @@
 		                type: 1,
 		                speed: 2
 		            }, {
-		                amount: 5,
+		                amount: 4,
 		                distance: view.bounds.width / 5,
 		                position_y: values.horizont + 20,
-		                scale: [0.2, 0.2],
+		                scale: [0.3, 0.2],
 		                type: 2,
 		                speed: 1
 		            }]
@@ -220,8 +206,8 @@
 		        Methods.toMultiplyObjects(balloons, {
 		            amount: balloonsNumber,
 		            group: balloonsGroup,
-		            distance: bDist / 10,
-		            scale: [0.6, 0.6]
+		            distance: bDist / 5,
+		            scale: [0.5, 0.5]
 		        });
 
 		    }
@@ -232,9 +218,9 @@
 		var Island = {
 		    defaults: {
 		        obj: $(objects.islandGround).attr("id"),
-		        objScale: [0.3, 0.2],
+		        objScale: [0.2, 0.1],
 		        objPosition: {
-		            x: view.bounds.width - 300,
+		            x: view.bounds.width - 100,
 		            y: values.horizont * 2
 		        }
 		    },
@@ -264,68 +250,7 @@
 		        return inst;
 		    }
 		};
-
-		var Flag = {
-		    defaults: {
-		        segments: [new Point(100, 100), new Point(30, 200), new Point(100, 300)],
-		        scale_x_max: 1,
-		        scale_x_min: 0.5,
-		        scale_x_amount: 5
-		    },
-
-		    scaling: function (obj, last_scale_x) {
-		        var x = last_scale_x || this.defaults.scale_x_max;
-
-		        if (x > this.defaults.scale_x_min && x < this.defaults.scale_x_max) x -= 0.1
-		        else x += 0.1
-		        obj.scale([x, 1]);
-		        /*				
-				var decr = -1
-				var count = 5
-				var i = 0
-
-
-				function scale(){
-
-					return 0.1*i;
-				//return decr;
-				} 
-
-
-				if(i==count){
-					decr = decr>0 ? -1 : 1    
-					i--
-					scale();
-				}
-				else{
-					i = decr>0 ? i-1 : i+1
-					if(i == 0 && decr>0){
-					decr = -1
-					i+1
-				}
-					scale();
-				}
-				
-	*/
-		        return x;
-		    },
-
-		    init: function () {
-		        var segments = this.defaults.segments;
-		        var path = new Path(segments);
-		        path.closed = true;
-		        path.fillColor = 'black';
-		        path.position = {
-		            y: values.horizont + 60,
-		            x: 1075
-		        }
-
-		        return path;
-
-		    }
-
-		}
-
+		
 		var Baza = {
 		    defaults: {
 		        flagColor: 0,
@@ -349,9 +274,9 @@
 
 		    tower: function (object, scale, position) {
 		        var object = object || Methods.toRasterSymbol($(objects.baza).attr("id"));
-		        var scale = scale || [0.15, 0.15];
+		        var scale = scale || [0.1, 0.1];
 		        var position = position || {
-		            y: values.horizont,
+		            y: values.horizont+20,
 		            x: 80
 		        };
 
@@ -359,11 +284,10 @@
 
 		        Methods.toReflectObject(inst, 0.1, 0, 0.7)
 
-		        //flag = Flag.init();
 		    },
 
 		    animate: function () {
-		        //flag.position.x -= 1
+
 		    },
 
 		    init: function () {
@@ -409,13 +333,13 @@
 		    defaults: {
 		        obj: Methods.toRasterSymbol($(objects.zod).attr("id")),
 		        objPosition: {
-		            y: view.bounds.height - 140,
+		            y: view.bounds.height - 85,
 		            x: view.center.x
 		        },
-		        objScale: [0.3, 0.4],
+		        objScale: [0.2, 0.2],
 		        ground: Methods.toRasterSymbol($(objects.zodGround).attr("id")),
 		        groundPosition: {
-		            y: view.bounds.height - 122,
+		            y: view.bounds.height -80,
 		            x: view.center.x
 		        },
 		        groundScale: [1.1, 1.1],
@@ -425,14 +349,14 @@
 
 		    values: {
 		        moved_to: false,
-		        hidden_shots: []
+		        hidden_shots: []                                              
 		    },
 
 		    shotsGroups: [],
 
 		    move_gun_to: function () {
 
-		        if ((Zod.values.moved_to == "left" && (Zod.defaults.gun.bounds.x < Zod.defaults.controllArea.min + 100)) || (Zod.values.moved_to == "right" && (Zod.defaults.gun.bounds.x + Zod.defaults.gun.bounds.width + 100 > Zod.defaults.controllArea.max))) {
+		        if ((Zod.values.moved_to == "left" && (Zod.defaults.gun.bounds.x < Zod.defaults.controllArea.min + 120)) || (Zod.values.moved_to == "right" && (Zod.defaults.gun.bounds.x + Zod.defaults.gun.bounds.width + 120 > Zod.defaults.controllArea.max))) {
 		            Zod.values.moved_to = false;
 		            return false;
 		        }
@@ -454,21 +378,15 @@
 		                $(Enemies.shipsGroups).each(function (gr) {
 		                    $(Enemies.shipsGroups[gr].children).each(function (ei, ee) {
 		                        if (Enemies.shipsGroups[gr].children[ei].handleBounds.intersects(Zod.shotsGroups[i].handleBounds)) {
-		                            console.log("got it");
+		                            debug.toScore();
 
-		                            //shipsGroup.children[0].children[ei].remove();
 		                            Enemies.shipsGroups[gr].children[ei].visible = false;
 		                            Enemies.shipsReflectGroups[gr].children[ei].visible = false;
-		                            //shipsGroup.children[0].children[ei].opacity = 0
+		                            
 		                            Zod.shotsGroups[i].visible = false;
-		                            //Zod.shotsGroups[i].remove();
+		                            
 		                            return true;
-		                            /*
-									$(Zod.values.hidden_shots).each(function(hi, he){
-										//Zod.shotsGroups.splice(Zod.values.hidden_shots[he], 1);
-									})
-									*/
-		                            //console.log(Enemies.shipsGroups);
+		                            
 		                        }
 		                    });
 		                });
@@ -476,10 +394,9 @@
 		            } else {
 		                this.visible = false;
 		                this.remove();
-		                //console.log(Zod.shotsGroups.length + " - " + Zod.values.hidden_shots.length + " - " + Shot.values.moved_to)
-		                //Zod.shotsGroups.splice(i)
+		              
 		                Zod.values.hidden_shots.push(i);
-		                //console.log(Zod.values.hidden_shots);
+		              
 		                return true;
 
 		            }
@@ -489,7 +406,6 @@
 
 		        });
 
-		        //Shot.values.moved_to--
 		    },
 
 		    fire_shot: function () {
@@ -499,7 +415,7 @@
 		                Zod.shotsGroups.splice(Zod.values.hidden_shots[hi], 1);
 		            })
 		            Zod.values.hidden_shots.length = 0;
-		            //Shot.values.moved_to = 0;
+		         
 		        }
 
 		        this.shotsGroups.push(Shot.create({
@@ -508,8 +424,7 @@
 		                y: Zod.defaults.gun.bounds.y - 100
 		            }
 		        }));
-		        //Shot.values.moved_to +=1;
-		        console.log(Enemies.shipsGroups.length);
+		        
 
 		    },
 
@@ -525,11 +440,9 @@
 		            max: inst.bounds.x + inst.bounds.width
 		        }
 		        reflection = Methods.toReflectObject(inst, 0.5, -10, 0.5)
-		        console.log(reflection.style)
 		        reflection.blendMode = 'lighten';
 		        return inst;
 
-		        //zodAreaGroup.addChild(zodGroundI)
 		    },
 
 		    gun: function (object, scale, position) {
@@ -556,12 +469,11 @@
 
 		            styleB: {
 		                fillColor: '#F2CEEB',
-		                strokeColor: '#333'
+		                strokeColor: '#666'
 		            },
 
 		            create: function (style) {
 
-		                //var path = new Path([new Point(10, 30), new Point(-10, 15), new Point(20, 0), new Point(70, 30)]);
 		                var path = new Path([new Point(5, 30), new Point(-5, 20), new Point(20, 23), new Point(30, 10), new Point(45, 23), new Point(60, 23), new Point(50, 30)]);
 		                switch (style) {
 		                case 1:
@@ -611,16 +523,13 @@
 
 		                        Enemies.shipsReflectGroups[i].children[a] = Methods.toReflectObject(Enemies.shipsGroups[i].children[a], 0.1, -1, 0.5);
 
-		                        //addChildren(Enemies.shipsGroups[i].children)
-		                        //shipsGroup.addChildren(Enemies.shipsReflectGroups[i])
 		                    });
 
 		                    shipsGroup.addChild(Enemies.shipsReflectGroups[i])
 
 		                })
 		                shipsGroup.position.x += view.bounds.width;
-		                console.log(Enemies.shipsReflectGroups.length)
-
+		           
 		            },
 
 		            move_ships_to: function () {
@@ -653,7 +562,7 @@
 		                Enemies.move_ships_to();
 
 		                if (Zod.shotsGroups.length) Zod.move_shots_to();
-		                //console.log(Shot.values.moved_to);
+		              
 		                if (Zod.values.moved_to) Zod.move_gun_to();
 
 		            },
@@ -671,8 +580,6 @@
 		                Zod.ground();
 		                Zod.gun();
 
-
-		                //ships.clipMask = false;
 		                zodAreaGroup = new Group();
 		                zodAreaGroup.clipMask = false;
 
@@ -687,7 +594,9 @@
 		            }
 		        }
 
-		    }; //master
+		    }; 
+			
+		//master
 		Scene.init();
 
 		function onFrameUni() {
@@ -717,9 +626,8 @@
 
 		function onKeyDown(event) {
 		    if (event.key == 'space') {
-		        //layer.selected = !layer.selected;
-		        //drawShot()
-		        debug.toPrint("space");
+
+		        //debug.toPrint("space");
 
 		        return false;
 		    };
@@ -727,42 +635,36 @@
 		    if (event.key == "right") {
 		        Zod.values.moved_to = "right";
 
-		        debug.toPrint(Zod.values.moved_to)
+		        //debug.toPrint(Zod.values.moved_to)
 		        return false;
 		    };
 
 		    if (event.key == "left") {
 		        Zod.values.moved_to = "left";
 
-		        debug.toPrint(Zod.values.moved_to)
+		        //debug.toPrint(Zod.values.moved_to)
 		        return false;
 		    };
 
-		    //return false;
 		}
 
 		function onKeyUp(event) {
 		    if (event.key == 'space') {
 
 		        Zod.fire_shot()
-		        //console.log(Zod.shotsGroups.length)
-		        //	console.log(Zod.defaults.gun.bounds.x+(Zod.defaults.gun.bounds.width/2))
 		        return false;
 		    }
-
-
-
 		    if (event.key == "left" || event.key == "right") Zod.values.moved_to = false;
 
 		}
 
 
 		function onMouseDrag(event) {
-		    //console.log('You dragged the mouse!');
+	
 		}
 
 		function onMouseUp(event) {
-		    //console.log(project.activeLayer.lastChild);
+	
 		}
 
 

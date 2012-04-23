@@ -40,3 +40,9 @@
 	.canvasImages {
 		display: none
 	}
+	
+	#debug-info {
+		padding:10px;
+		color:#fff;
+		font: 12px Arial 
+	}

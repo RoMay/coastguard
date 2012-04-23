@@ -11,13 +11,17 @@
 	<script type="text/javascript">
 	$(document).ready(function(){
 	debug = {
-		  defstr: "INFO: \n",
+		  defstr: "SCORE: \n",
+		  score:0,
 		  obj: $("#debug-info"),
 		  toInfo: function(value){
 			debug.str = debug.defstr +" | "+ value;
 		  },
+		  toScore: function(){
+			debug.toPrint(debug.score +=1)
+		  },
 		  toPrint: function(value){
-			var v = debug.defstr + value || debug.str
+			var v = debug.defstr + value
 			$(debug.obj).html(v);
 		  }
 		};
