@@ -170,8 +170,8 @@
 			
 			clouds: function(limit){
 					
-					var cloudsNumber = limit || 15;
-					var cDist = view.bounds.width / cloudsNumber*2;
+					var cloudsNumber = limit || 100;
+					var cDist = view.bounds.width/4;
 					
 					$(objects.clouds).each(function(){
 						Methods.toRasterSymbol($(this).attr("id"), clouds);
