@@ -401,12 +401,12 @@
 				
 			move_gun_to: function(){
 					
-					if((Zod.values.moved_to == "left" && (Zod.defaults.gun.bounds.x < Zod.defaults.controllArea.min)) || (Zod.values.moved_to == "right" && (Zod.defaults.gun.bounds.x+Zod.defaults.gun.bounds.width > Zod.defaults.controllArea.max))){
+					if((Zod.values.moved_to == "left" && (Zod.defaults.gun.bounds.x < Zod.defaults.controllArea.min+100)) || (Zod.values.moved_to == "right" && (Zod.defaults.gun.bounds.x+Zod.defaults.gun.bounds.width+100 > Zod.defaults.controllArea.max))){
 						Zod.values.moved_to = false;
 						return false;
 					}
 					
-					Methods.moveObjectOnLine(this.defaults.gun, this.values.moved_to, 3);
+					Methods.moveObjectOnLine(this.defaults.gun, this.values.moved_to, 4);
 					
 			},
 						
@@ -419,27 +419,31 @@
 						Zod.shotsGroups[i].position.y -= 5*0.8;
 						Zod.shotsGroups[i].scale(0.98);
 						
-						$(shipsGroup.children[0].children).each(function(ei, ee){
-							if(shipsGroup.children[0].children[ei].handleBounds.intersects(Zod.shotsGroups[i].handleBounds)) {
-								console.log("got it");
-								
-								//shipsGroup.children[0].children[ei].remove();
-								shipsGroup.children[0].children[ei].visible = false;
-								//shipsGroup.children[0].children[ei].opacity = 0
-								
-								Zod.shotsGroups[i].visible = false;
-								//Zod.shotsGroups[i].remove();
-								
-								return true;
-								/*
-								$(Zod.values.hidden_shots).each(function(hi, he){
-									//Zod.shotsGroups.splice(Zod.values.hidden_shots[he], 1);
-								})
-								*/
-								//console.log(Zod.shotsGroups.length +" -- "+ Zod.values.hidden_shots);
-								
-								
-							}
+						
+						$(Enemies.shipsGroups).each(function(gr){
+							$(Enemies.shipsGroups[gr].children).each(function(ei, ee){
+								if(Enemies.shipsGroups[gr].children[ei].handleBounds.intersects(Zod.shotsGroups[i].handleBounds)) {
+									console.log("got it");
+									
+									//shipsGroup.children[0].children[ei].remove();
+									Enemies.shipsGroups[gr].children[ei].visible = false;
+									Enemies.shipsReflectGroups[gr].children[ei].visible = false;
+									//shipsGroup.children[0].children[ei].opacity = 0
+									
+									Zod.shotsGroups[i].visible = false;
+									//Zod.shotsGroups[i].remove();
+									
+									return true;
+									/*
+									$(Zod.values.hidden_shots).each(function(hi, he){
+										//Zod.shotsGroups.splice(Zod.values.hidden_shots[he], 1);
+									})
+									*/
+									//console.log(Enemies.shipsGroups);
+									
+									
+								}
+							});
 						});
 						
 					}
@@ -476,6 +480,7 @@
 				this.shotsGroups.push(Shot.create({position: {x:Zod.defaults.gun.bounds.x+(Zod.defaults.gun.bounds.width/2), y:Zod.defaults.gun.bounds.y-100 }}));
 				//Shot.values.moved_to +=1;
 				
+				console.log(Enemies.shipsGroups.length);
 				
 			},
 	
@@ -549,6 +554,8 @@
 			
 			return {
 				shipsGroups: [],
+
+				shipsReflectGroups: [],
 				
 				draw_ships: function(params){
 					shipsGroup = new Group();
@@ -560,17 +567,23 @@
 					  Methods.toMultiplyObjects(ship.create(e.type), {amount: e.amount, group: Enemies.shipsGroups[i], distance: e.distance, position_y:e.position_y, scale: e.scale});	
 					 
    					  shipsGroup.addChild(Enemies.shipsGroups[i])
-
+						
+					  Enemies.shipsReflectGroups[i] = new Group();
 
 					  $(Enemies.shipsGroups[i].children).each(function(a){
-						
-							Methods.toReflectObject(Enemies.shipsGroups[i].children[a], 0.1, -1, 0.5, Enemies.shipsGroups[i])
+
+							Enemies.shipsReflectGroups[i].children[a] = Methods.toReflectObject(Enemies.shipsGroups[i].children[a], 0.1, -1, 0.5);
+							
+							//addChildren(Enemies.shipsGroups[i].children)
+							//shipsGroup.addChildren(Enemies.shipsReflectGroups[i])
 							
 						});
+						
+						shipsGroup.addChild(Enemies.shipsReflectGroups[i])
 					  
 					})
 					shipsGroup.position.x += view.bounds.width;
-					//console.log(Enemies.shipsGroups)
+					console.log(Enemies.shipsReflectGroups.length)
 					
 				},
 				
@@ -578,6 +591,7 @@
 				
 					$(Enemies.shipsGroups).each(function(i, e){
 						Enemies.shipsGroups[i].position.x -= Game.current_level.animal_ships[i].speed;
+						Enemies.shipsReflectGroups[i].position.x -= Game.current_level.animal_ships[i].speed;
 					});
 					
 				},
@@ -649,7 +663,7 @@
 		}
 		
 		Scene.update();
-	
+
 		if(jQuery.browser.mozilla){
 			function onFrameLoop(){ 
 				
@@ -664,7 +678,7 @@
 				 
 			}
 			onFrameLoop();
-		}
+		}    
 		else onFrame = onFrameUni;
 		
 		
@@ -688,7 +702,7 @@
 			
 			if (event.key == "left") {
 				Zod.values.moved_to = "left";
-				
+				   
 				debug.toPrint(Zod.values.moved_to)
 				return false;
 			};
