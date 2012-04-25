@@ -1,8 +1,8 @@
-<!DOCTYPE html> 
+﻿<!DOCTYPE html> 
 <html> 
   <head> 
     <meta charset="utf-8" />
-    <title>Bouts</title> 
+    <title>Küstenwache - HTML5 Game</title> 
     <script type="text/javascript" src="jquery-1.6.min.js"></script>
 	<script type="text/javascript" src="paper.js"></script>
     <!--[if lt IE 9]>
@@ -25,26 +25,18 @@
 			$(debug.obj).html(v);
 		  }
 		};
-	
+		
 		})
 		
 	</script>	
-    <script type="text/paperscript" canvas="a-canvas" src="canvas.js"></script>
+    <script type="text/paperscript" canvas="scene-canvas" src="canvas.js"></script>
 	<link rel="stylesheet" type='text/css' href='style.css' />
-    <style>
-      
-	
-	  
-    </style>
   </head> 
   
   <body> 
       
       
-	  
-	  <div class="canvasWrapper">
-			<canvas id="a-canvas" resize></canvas>
-	  </div>
+	  <div class="box panel" id="start-confirmation" style="0px;"><div class="box slick-box"></div></div>
 	  <div class="canvasImages">
 	    <img id="zod" class="zod-area" src="img/zod.png" />
 	    <img id="zod-ground" class="zod-area ground" src="img/zod-ground.png" />
@@ -60,9 +52,13 @@
 		<img id="balloon-pink" class="balloons" src="img/balloon-pink.png" />
 		<img id="balloon-purple" class="balloons" src="img/balloon-purple.png" />
 		<img id="ship1" class="ships" src="img/ship1.png" />
-		
 	  </div>
-
+	  
+	  <div class="canvasWrapper">
+			<canvas id="scene-canvas" resize></canvas>
+	  </div>
 	  <div id="debug-info"></div>
+	  
+	  
   </body> 
 </html> 

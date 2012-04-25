@@ -1,5 +1,6 @@
 		var values = { // static values used as a predefined configuration 
-		    zodControllArea: [0, 0],
+		    canvasHeight: $("#scene-canvas").height(),
+			zodControllArea: [0, 0],
 		    horizont: view.bounds.height / 3,
 		    skyGradient: new Gradient(["#729FCF", "#97E1FC"]),
 		    seeGradient: new Gradient(["#91cde0", "#4a8bcc"]),
@@ -370,7 +371,7 @@
 		        $(Zod.shotsGroups).each(function (i, e) {
 		            if (this.visible == false) return true;
 
-		            if (Zod.shotsGroups[i].position.y > values.horizont + 5) {
+		            if (Zod.shotsGroups[i].position.y > values.horizont + 3) {
 		                Zod.shotsGroups[i].position.y -= 5 * 0.8;
 		                Zod.shotsGroups[i].scale(0.98);
 
@@ -574,7 +575,7 @@
 		                Background.clouds();
 		                Background.balloons();
 		                //Background.clouds();
-		                Enemies.init();
+		                
 		                Baza.ground();
 		                Baza.tower();
 		                Zod.ground();
@@ -598,6 +599,14 @@
 			
 		//master
 		Scene.init();
+		
+		$("#start-confirmation").delay(200).css({"top": (values.canvasHeight/3)-15+"px"}).fadeIn();	
+		
+		$("#start-confirmation").click(function(){
+			Enemies.init();
+			$(this).fadeOut();
+		})
+		
 
 		function onFrameUni() {
 

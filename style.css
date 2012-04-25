@@ -1,48 +1,117 @@
  html, body {
-		height:100%;
-	 }
-	 
-	 body {
-		margin: 0px;
-		padding: 0px;
-		cursor: default;
-		overflow:hidden;
-		background:#4a8bcc;
-				
-	}
+	height:100%;
+ }
+ 
+ body {
+	margin: 0px;
+	padding: 0px;
+	cursor: default;
+	overflow:hidden;
+	background:#4a8bcc;
+	position:relative;
+			
+}
 
-	
-	.canvasWrapper {
-		width:100%;
-		height:100%;
-		max-height:800px;
-		position:relative;
-		/*border: 1px solid #e6e6e6;*/
-	}
-	
-	
-	
-	.canvasWrapper canvas {
-		top:0;
-		position:absolute; 
-		z-index:1; 
-		width:100%;
-		height:100%;
-		
-	}
 
-	.canvasWrapper #a-canvas {
+.canvasWrapper {
+	width:100%;
+	height:100%;
+	max-height:800px;
+	position:relative;
+	top:0;
+	/*border: 1px solid #e6e6e6;*/
+}
 
-		/*background:#729FCF;*/
-		
-	}
+
+
+.canvasWrapper canvas {
+	top:0;
+	position:absolute; 
+	z-index:1; 
+	width:100%;
+	height:100%;
 	
-	.canvasImages {
-		display: none
-	}
+}
+
+.canvasWrapper #scene-canvas {
+
+	/*background:#729FCF;*/
 	
-	#debug-info {
-		padding:10px;
-		color:#fff;
-		font: 12px Arial 
-	}
+}
+
+.canvasImages {
+	display: none;
+}
+
+#debug-info {
+	padding:10px;
+	color:#fff;
+	font: 12px Arial 
+}
+
+.panel {
+	
+	position:absolute;
+	left:50%;
+	top:0;
+	z-index:2
+	
+}
+
+#start-confirmation {
+	display:none;
+	
+}
+
+#start-confirmation>.box{
+	left:-100px;
+	top:0;
+}
+	
+.slick-box {
+	position: relative;
+	width:200px;
+	height: 50px;
+	border: 1px solid #efefef;
+	
+	padding: 0;
+	border: 1px solid #efefef;
+	margin: 0 30px 30px 0;
+	background: #fff;
+	-webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.27), 0 0 40px rgba(0, 0, 0, 0.06) inset;
+	-moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.27), 0 0 40px rgba(0, 0, 0, 0.06) inset;
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.27), 0 0 40px rgba(0, 0, 0, 0.06) inset; 
+}
+
+
+.slick-box:before,
+.slick-box:after {
+	content: '';
+	z-index: -1;
+	position: absolute;
+	left: 10px;
+	bottom: 10px;
+	width: 70%;
+	max-width: 300px; /* avoid rotation causing ugly appearance at large container widths */
+	max-height: 100px;
+	height: 55%;
+	-webkit-box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+	-moz-box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+	-webkit-transform: skew(-15deg) rotate(-6deg);
+	-moz-transform: skew(-15deg) rotate(-6deg);
+	-ms-transform: skew(-15deg) rotate(-6deg);
+	-o-transform: skew(-15deg) rotate(-6deg);
+	transform: skew(-15deg) rotate(-6deg); 
+}
+
+
+.slick-box:after {
+	left: auto;
+	right: 10px;
+	-webkit-transform: skew(15deg) rotate(6deg);
+	-moz-transform: skew(15deg) rotate(6deg);
+	-ms-transform: skew(15deg) rotate(6deg);
+	-o-transform: skew(15deg) rotate(6deg);
+	transform: skew(15deg) rotate(6deg); 
+}
