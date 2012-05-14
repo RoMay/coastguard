@@ -66,12 +66,19 @@
 #start-confirmation>.box{
 	left:-100px;
 	top:0;
+	text-transform:uppercase;
+	text-align:center;
+	padding:15px 10px 15px 0;
+	color:#FF8C00;
+	background:#FFF;
+	font-family: 'Aclonica', sans-serif;
+	cursor:pointer;
+	font-size:16px;
 }
 	
 .slick-box {
 	position: relative;
-	width:200px;
-	height: 50px;
+	min-width:200px;
 	border: 1px solid #efefef;
 	
 	padding: 0;
