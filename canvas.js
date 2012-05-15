@@ -99,35 +99,6 @@
 		};
 
 
-		var Game = new function () { // basic game configuration, level dependencies
-		        var defaults = {
-		            animal_ships: [{
-		                amount: 10,
-		                distance: view.bounds.width / 7,
-		                position_y: values.horizont + 40,
-		                scale: [0.5, 0.5],
-		                type: 1,
-		                speed: 2
-		            }, {
-		                amount: 4,
-		                distance: view.bounds.width / 5,
-		                position_y: values.horizont + 20,
-		                scale: [0.3, 0.2],
-		                type: 2,
-		                speed: 1
-		            }]
-		        };
-
-		        return {
-		            current_level: defaults,
-		            reset_to_defaults: function () {
-		                this.current_level = defaults;
-		            }
-		        }
-		    };
-
-
-
 		var sky, see, zod, zodGround, baza, bazaGround, islandGround;
 
 		var clouds = [],
@@ -596,16 +567,60 @@
 		        }
 
 		    }; 
-			
-		//master
-		Scene.init();
 		
-		$("#start-confirmation").delay(200).css({"top": (values.canvasHeight/3)-15+"px"}).fadeIn();	
 		
-		$("#start-confirmation").click(function(){
-			Enemies.init();
-			$(this).fadeOut();
-		})
+		var Game = new function () { // basic game configuration, level dependencies
+				var defaults = {
+					confirmation_window: $("#start-confirmation"),
+					
+					animal_ships: [{
+						amount: 10,
+						distance: view.bounds.width / 7,
+						position_y: values.horizont + 40,
+						scale: [0.5, 0.5],
+						type: 1,
+						speed: 1.5
+					}, {
+						amount: 4,
+						distance: view.bounds.width / 5,
+						position_y: values.horizont + 20,
+						scale: [0.3, 0.2],
+						type: 2,
+						speed: 1
+					}]
+				};
+
+				return {
+					init: function(){
+						Scene.init();
+						this.confirm_start()
+					},
+					confirm_start: function(){
+						$(defaults.confirmation_window).delay(100).css({"top": (values.canvasHeight/3)-15+"px"}).fadeIn();	
+						$(defaults.confirmation_window).click(function(){
+							Game.start();
+							$(this).fadeOut();
+						})
+					},
+					
+					start: function(){
+						Enemies.init();
+						
+					},
+					
+					current_level: defaults,
+					
+					reset_to_defaults: function () {
+						this.current_level = defaults;
+					}
+				}
+		};
+
+		
+		//Master initialization
+		Game.init();
+		
+		
 		
 
 		function onFrameUni() {
