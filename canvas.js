@@ -328,7 +328,7 @@
 
 		    move_gun_to: function () {
 
-		        if ((Zod.values.moved_to == "left" && (Zod.defaults.gun.bounds.x < Zod.defaults.controllArea.min + 120)) || (Zod.values.moved_to == "right" && (Zod.defaults.gun.bounds.x + Zod.defaults.gun.bounds.width + 120 > Zod.defaults.controllArea.max))) {
+		        if ((Zod.values.moved_to == "left" && (Zod.defaults.gun.bounds.x < Zod.defaults.controllArea.min + 100)) || (Zod.values.moved_to == "right" && (Zod.defaults.gun.bounds.x + Zod.defaults.gun.bounds.width + 100 > Zod.defaults.controllArea.max))) {
 		            Zod.values.moved_to = false;
 		            return false;
 		        }
@@ -351,13 +351,17 @@
 		                    $(Enemies.shipsGroups[gr].children).each(function (ei, ee) {
 		                        if (Enemies.shipsGroups[gr].children[ei].handleBounds.intersects(Zod.shotsGroups[i].handleBounds)) {
 		                            debug.toScore();
-
+									
 		                            Enemies.shipsGroups[gr].children[ei].visible = false;
 		                            Enemies.shipsReflectGroups[gr].children[ei].visible = false;
 		                            
 		                            Zod.shotsGroups[i].visible = false;
 		                            
-		                            return true;
+									Game.values.score++;
+									
+									if(Game.values.score == Game.values.total_ships) Game.confirm_finish();
+									
+									return true;
 		                            
 		                        }
 		                    });
@@ -505,16 +509,20 @@
 		            },
 
 		            move_ships_to: function () {
-
+					
 		                $(Enemies.shipsGroups).each(function (i, e) {
 		                    Enemies.shipsGroups[i].position.x -= Game.current_level.animal_ships[i].speed;
 		                    Enemies.shipsReflectGroups[i].position.x -= Game.current_level.animal_ships[i].speed;
 		                });
+						
+						if(Enemies.shipsGroups[0].bounds.x < (Enemies.shipsGroups[0].bounds.width*(-1)+Zod.defaults.controllArea.min))
+							Game.confirm_finish();
 
 		            },
 
 		            init: function () {
 		                this.draw_ships(Game.current_level.animal_ships);
+						
 
 		            }
 
@@ -531,11 +539,14 @@
 		                cloudsGroup.position.x -= 0.2;
 		                balloonsGroup.position.x -= 0.15;
 
-		                Enemies.move_ships_to();
-
-		                if (Zod.shotsGroups.length) Zod.move_shots_to();
+						if(Game.values.active){
+						
+							Enemies.move_ships_to();
+							 
+							if (Zod.shotsGroups.length) Zod.move_shots_to();
 		              
-		                if (Zod.values.moved_to) Zod.move_gun_to();
+							if (Zod.values.moved_to) Zod.move_gun_to();
+						}
 
 		            },
 
@@ -571,7 +582,9 @@
 		
 		var Game = new function () { // basic game configuration, level dependencies
 				var defaults = {
-					confirmation_window: $("#start-confirmation"),
+					start_confirmation_window: $("#start-confirmation"),
+					end_confirmation_window: $("#end-confirmation"),
+					current_score_field: $("#current-score"),
 					
 					animal_ships: [{
 						amount: 10,
@@ -591,21 +604,50 @@
 				};
 
 				return {
+					values: {
+						active: false,
+						total_ships:0,
+						score: 0
+					},
+					
 					init: function(){
 						Scene.init();
 						this.confirm_start()
 					},
 					confirm_start: function(){
-						$(defaults.confirmation_window).delay(100).css({"top": (values.canvasHeight/3)-15+"px"}).fadeIn();	
-						$(defaults.confirmation_window).click(function(){
+						$(defaults.start_confirmation_window).delay(100).css({"top": (values.canvasHeight/3)-15+"px"}).fadeIn();	
+						$(defaults.start_confirmation_window).click(function(){
 							Game.start();
+							$(this).fadeOut();
+						})
+					},
+					
+					confirm_finish: function(){
+						console.log("FINISH");
+						$(defaults.current_score_field).html(this.values.score)
+						$(defaults.end_confirmation_window).css({"top": (values.canvasHeight/3)-15+"px"}).fadeIn();	
+						$(defaults.end_confirmation_window).click(function(){
+							Game.finish();
 							$(this).fadeOut();
 						})
 					},
 					
 					start: function(){
 						Enemies.init();
+						this.values.active = true;
+						this.total_ships();
+						console.log(this.values.total_ships)
 						
+					},
+					
+					finish: function(){
+						this.values.active = false
+					},
+					
+					total_ships: function(){
+						$(this.current_level.animal_ships).each(function(){
+							Game.values.total_ships += this.amount;
+						});
 					},
 					
 					current_level: defaults,
@@ -674,9 +716,11 @@
 
 		function onKeyUp(event) {
 		    if (event.key == 'space') {
-
-		        Zod.fire_shot()
-		        return false;
+			
+				if(Game.values.active){
+					Zod.fire_shot()
+					return false;
+				}
 		    }
 		    if (event.key == "left" || event.key == "right") Zod.values.moved_to = false;
 
@@ -690,6 +734,3 @@
 		function onMouseUp(event) {
 	
 		}
-
-
-		// from Home
