@@ -3,13 +3,18 @@
  }
  
  body {
-	margin: 0px;
-	padding: 0px;
 	cursor: default;
 	overflow:hidden;
 	background:#4a8bcc;
 	position:relative;
+	color:#ccc;
+	font: 12px Arial 
 			
+}
+
+body, h3, ul {
+	margin: 0;
+	padding: 0;
 }
 
 
@@ -69,11 +74,25 @@
 	text-transform:uppercase;
 	text-align:center;
 	padding:15px 10px 15px 10px;
-	color:#FF8C00;
 	background:#FFF;
-	font-family: 'Aclonica', sans-serif;
 	cursor:pointer;
+	
+}
+
+.confirmation>.box{
+	font-family: 'Aclonica', sans-serif;
 	font-size:16px;
+	color:#FF8C00;
+}
+
+ul.horizonalList {
+	padding-bottom: 5px;
+	text-align:center;
+}
+
+ul.horizonalList li{
+	display:inline;
+	margin-right: 10px;
 }
 	
 .slick-box {

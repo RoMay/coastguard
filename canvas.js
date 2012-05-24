@@ -607,7 +607,8 @@
 					values: {
 						active: false,
 						total_ships:0,
-						score: 0
+						score: 0,
+						current_level: 1
 					},
 					
 					init: function(){
@@ -623,7 +624,7 @@
 					},
 					
 					confirm_finish: function(){
-						console.log("FINISH");
+						//console.log("FINISH");
 						$(defaults.current_score_field).html(this.values.score)
 						$(defaults.end_confirmation_window).css({"top": (values.canvasHeight/3)-15+"px"}).fadeIn();	
 						$(defaults.end_confirmation_window).click(function(){
@@ -632,11 +633,16 @@
 						})
 					},
 					
-					start: function(){
+					start: function(i){
+						
+						if(i>this.values.current_level){
+							this.level_up(i);
+						};
+						
 						Enemies.init();
 						this.values.active = true;
 						this.total_ships();
-						console.log(this.values.total_ships)
+						//console.log(this.values.total_ships)
 						
 					},
 					
@@ -648,6 +654,10 @@
 						$(this.current_level.animal_ships).each(function(){
 							Game.values.total_ships += this.amount;
 						});
+					},
+					
+					level_up: function(i){
+						this.values.current_level++;
 					},
 					
 					current_level: defaults,
