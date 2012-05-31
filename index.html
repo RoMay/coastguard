@@ -3,7 +3,7 @@
   <head> 
     <meta charset="utf-8" />
     <title>Küstenwache - HTML5 Game</title> 
-    <script type="text/javascript" src="jquery-1.6.min.js"></script>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
 	<script type="text/javascript" src="paper.js"></script>
     <!--[if lt IE 9]>
 	<script type="text/javascript" src="excanvas.js"></script>
@@ -12,13 +12,15 @@
 	$(document).ready(function(){
 	debug = {
 		  defstr: "SCORE: \n",
-		  score:0,
 		  obj: $("#debug-info"),
 		  toInfo: function(value){
 			debug.str = debug.defstr +" | "+ value;
 		  },
-		  toScore: function(){
-			debug.toPrint(debug.score +=1)
+		  toScore: function(i){
+			debug.toPrint(i)
+		  },
+		  toLevel: function(i){
+			debug.toPrint(i? i : debug.score +=1)
 		  },
 		  toPrint: function(value){
 			var v = debug.defstr + value
@@ -38,7 +40,7 @@
       
       
 	  <div class="box panel confirmation" id="start-confirmation" style="0px;"><div class="box slick-box"><h3>Start</h3></div></div>
-	  <div class="box panel confirmation" id="end-confirmation" style="0px;"><div class="box slick-box"><h3>Current score: <span id="current-score"></span></h3><ul class="horizonalList"><li>Again</li><li>Next</li></ul></div></div>
+	  <div class="box panel confirmation" id="end-confirmation" style="0px;"><div class="box slick-box"><h3>Current score: <span id="current-score"></span></h3><ul class="horizonalList"><li id="play-again">Again</li><li id="play-next">Next</li></ul></div></div>
 	  <div class="canvasImages">
 	    <img id="zod" class="zod-area" src="img/zod.png" />
 	    <img id="zod-ground" class="zod-area ground" src="img/zod-ground.png" />
