@@ -10,21 +10,21 @@
 	<![endif]-->
 	<script type="text/javascript">
 	$(document).ready(function(){
-	debug = {
+	Status = {
 		  defstr: "SCORE: \n",
-		  obj: $("#debug-info"),
+		  obj: $("#status-info"),
 		  toInfo: function(value){
-			debug.str = debug.defstr +" | "+ value;
+			Status.str = Status.defstr +" | "+ value;
 		  },
 		  toScore: function(i){
-			debug.toPrint(i)
+			Status.toPrint(i)
 		  },
 		  toLevel: function(i){
-			debug.toPrint(i? i : debug.score +=1)
+			Status.toPrint(i? i : Status.score +=1)
 		  },
 		  toPrint: function(value){
-			var v = debug.defstr + value
-			$(debug.obj).html(v);
+			var v = Status.defstr + value
+			$(Status.obj).html(v);
 		  }
 		};
 		
@@ -61,7 +61,7 @@
 	  <div class="canvasWrapper">
 			<canvas id="scene-canvas" resize></canvas>
 	  </div>
-	  <div id="debug-info"></div>
+	  <div id="status-info"></div>
 	  
 	  
   </body> 

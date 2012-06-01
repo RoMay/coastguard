@@ -358,7 +358,7 @@
 		                            Zod.shotsGroups[i].visible = false;
 		                            
 									Game.values.score++;
-									debug.toScore(Game.values.score);
+									Status.toScore(Game.values.score);
 									
 									if(Game.values.score == Game.values.total_ships) Game.confirm_finish();
 									
@@ -626,6 +626,7 @@
 					
 					values: {
 						active: false,
+						confirmation_start: false,
 						confirmation_finish: false,
 						total_ships:0,
 						score: 0,
@@ -641,17 +642,32 @@
 						this.confirm_start()
 					},
 					confirm_start: function(){
-						$(defaults.start_confirmation_window).delay(100).css({"top": (values.canvasHeight/3)-15+"px"}).fadeIn();	
-						$(defaults.start_confirmation_window).click(function(){
+						$(defaults.start_confirmation_window).delay(100).css({"top": (values.canvasHeight/3)-15+"px"}).fadeIn();
+						Game.values.confirmation_start = true;
+						function confirmed(object){
 							Game.start();
-							$(this).fadeOut();
+							$(object).fadeOut();
 							//Game.confirm_finish();
+							Game.values.confirmation_start = false;
+							
+						}
+						
+						$(defaults.start_confirmation_window).click(function(){
+							confirmed(this);
 							
 						})
+						$(window).keyup(function(event) {
+							if (event.which == 32) {
+								confirmed(defaults.start_confirmation_window);
+								$(this).off();
+							}							
+
+						})
+
 					},
 					
 					confirm_finish: function(){
-						console.log("FINISH");
+						
 						$(defaults.current_score_field).html(this.values.score)
 						$(defaults.end_confirmation_window).css({"top": (values.canvasHeight/3)-15+"px"}).fadeIn();
 						this.finish();						
@@ -659,6 +675,13 @@
 							$(this).off();
 							$(defaults.end_confirmation_window).fadeOut();
 							Game.next();
+							
+						});
+						
+						$(defaults.play_again).on("click", function(){
+							$(this).off();
+							$(defaults.end_confirmation_window).fadeOut();
+							Game.again();
 							
 						})
 					},
@@ -672,15 +695,20 @@
 						this.values.active = true;
 						this.values.confirmation_finish = false;
 						this.total_ships();
-						//console.log(this.values.total_ships)
 						this.values.score = 0;
-						debug.toScore(this.values.score)
+						Status.toScore(this.values.score)
 						
 					},
 					
 					next: function(){
 					
 						this.start(this.values.current_level+1);
+						
+					},
+					
+					again: function(){
+					
+						this.start(this.values.current_level);
 						
 					},
 					
@@ -704,7 +732,7 @@
 							this.speed += .2;
 							
 						});
-						console.log(this.current_level)
+						
 					},
 					
 					current_level: defaults,
@@ -755,7 +783,7 @@
 		function onKeyDown(event) {
 		    if (event.key == 'space') {
 
-		        //debug.toPrint("space");
+		        //status.toPrint("space");
 
 		        return false;
 		    };
@@ -763,14 +791,14 @@
 		    if (event.key == "right") {
 		        Zod.values.moved_to = "right";
 
-		        //debug.toPrint(Zod.values.moved_to)
+		        //status.toPrint(Zod.values.moved_to)
 		        return false;
 		    };
 
 		    if (event.key == "left") {
 		        Zod.values.moved_to = "left";
 
-		        //debug.toPrint(Zod.values.moved_to)
+		        //status.toPrint(Zod.values.moved_to)
 		        return false;
 		    };
 
@@ -783,6 +811,7 @@
 					Zod.fire_shot()
 					return false;
 				}
+				
 		    }
 		    if (event.key == "left" || event.key == "right") Zod.values.moved_to = false;
 

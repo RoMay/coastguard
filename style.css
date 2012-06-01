@@ -48,7 +48,7 @@ body, h3, ul {
 	display: none;
 }
 
-#debug-info {
+#status-info {
 	padding:10px;
 	color:#fff;
 	font: 12px Arial 
