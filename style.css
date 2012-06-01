@@ -51,7 +51,10 @@ body, h3, ul {
 #status-info {
 	padding:10px;
 	color:#fff;
-	font: 12px Arial 
+	font: 12px Arial;
+	position:relative;
+	z-index:1;
+	top: -70px;
 }
 
 .panel {
