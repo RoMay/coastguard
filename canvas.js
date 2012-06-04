@@ -647,7 +647,7 @@
 						function confirmed(object){
 							Game.start();
 							$(object).fadeOut();
-							//Game.confirm_finish();
+							$(window).off();
 							Game.values.confirmation_start = false;
 							
 						}
@@ -659,7 +659,6 @@
 						$(window).keyup(function(event) {
 							if (event.which == 32) {
 								confirmed(defaults.start_confirmation_window);
-								$(this).off();
 							}							
 
 						})
@@ -782,11 +781,18 @@
 
 		function onKeyDown(event) {
 		    if (event.key == 'space') {
-
-		        //status.toPrint("space");
-
-		        return false;
-		    };
+			
+				if(Game.values.active){
+					$("#scene-canvas").animate({top: "-3px"}, 100, function(){
+						$(this).animate({top: "0"}, 300)
+					})
+					Zod.fire_shot();
+					view.zoom +=0.005 
+					return false;
+				}
+				
+		    }
+		
 
 		    if (event.key == "right") {
 		        Zod.values.moved_to = "right";
@@ -805,16 +811,25 @@
 		}
 
 		function onKeyUp(event) {
-		    if (event.key == 'space') {
-			
-				if(Game.values.active){
-					Zod.fire_shot()
-					return false;
-				}
-				
-		    }
-		    if (event.key == "left" || event.key == "right") Zod.values.moved_to = false;
 
+		    if (event.key == 'space') {
+
+		        //status.toPrint("space");
+				view.zoom -=0.005
+		        return false;
+		    };
+			
+			if (event.key == "left" || event.key == "right") Zod.values.moved_to = false;
+			
+			if (event.key == "shift"){
+				var scale = ((view.bounds.width * view.bounds.height) /
+                            (view.viewSize.width * view.viewSize.height)); 
+				console.log(view)//.zoom+200
+				
+				view.zoom = view.zoom*1.2
+				view.scale(1999, .1)
+			
+			}
 		}
 
 
