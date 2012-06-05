@@ -10,7 +10,8 @@
 		};
 
 		var objects = { // collector of static images specified from the markup
-		    clouds: $("img.clouds"),
+		    canvas_element: $("#scene-canvas"),
+			clouds: $("img.clouds"),
 		    balloons: $("img.balloons"),
 		    zodArea: $("img.zod-area"),
 		    zod: $("img#zod")[0],
@@ -404,6 +405,22 @@
 		        
 
 		    },
+			
+			start_to_shot: function() {
+				objects.canvas_element.animate({top: "-3px"}, 100, function(){
+						$(this).animate({top: "0"}, 300, function(){
+							
+							Game.values.ready_to_shot = true;
+						})
+						view.zoom -=0.005;
+						
+						
+					})
+					Zod.fire_shot();
+					view.zoom +=0.005;
+					Game.values.ready_to_shot = false;		
+			
+			},
 
 		    ground: function (object, scale, position) {
 
@@ -602,6 +619,7 @@
 		
 		var Game = new function () { // basic game configuration, level dependencies
 				var defaults = {
+					canvas_element: $("#scene-canvas"),
 					start_confirmation_window: $("#start-confirmation"),
 					end_confirmation_window: $("#end-confirmation"),
 					current_score_field: $("#current-score"),
@@ -628,6 +646,7 @@
 						active: false,
 						confirmation_start: false,
 						confirmation_finish: false,
+						ready_to_shot: true,
 						total_ships:0,
 						score: 0,
 						current_level: 1
@@ -782,13 +801,10 @@
 		function onKeyDown(event) {
 		    if (event.key == 'space') {
 			
-				if(Game.values.active){
-					$("#scene-canvas").animate({top: "-3px"}, 100, function(){
-						$(this).animate({top: "0"}, 300)
-					})
-					Zod.fire_shot();
-					view.zoom +=0.005 
-					return false;
+				if(Game.values.active && Game.values.ready_to_shot){
+					Zod.start_to_shot();
+								
+					//return false;
 				}
 				
 		    }
@@ -798,14 +814,14 @@
 		        Zod.values.moved_to = "right";
 
 		        //status.toPrint(Zod.values.moved_to)
-		        return false;
+		        //return false;
 		    };
 
 		    if (event.key == "left") {
 		        Zod.values.moved_to = "left";
 
 		        //status.toPrint(Zod.values.moved_to)
-		        return false;
+		        //return false;
 		    };
 
 		}
@@ -815,7 +831,7 @@
 		    if (event.key == 'space') {
 
 		        //status.toPrint("space");
-				view.zoom -=0.005
+				
 		        return false;
 		    };
 			
