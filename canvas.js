@@ -412,12 +412,12 @@
 							
 							Game.values.ready_to_shot = true;
 						})
-						view.zoom -=0.005;
+						view.zoom -=0.002;
 						
 						
 					})
 					Zod.fire_shot();
-					view.zoom +=0.005;
+					view.zoom +=0.002;
 					Game.values.ready_to_shot = false;		
 			
 			},
