@@ -388,15 +388,7 @@
 
 		    fire_shot: function () {
 
-		        if (Zod.values.hidden_shots.length) {
-		            $(Zod.values.hidden_shots).each(function (hi, he) {
-		                Zod.shotsGroups.splice(Zod.values.hidden_shots[hi], 1);
-		            })
-		            Zod.values.hidden_shots.length = 0;
-		         
-		        }
-
-		        this.shotsGroups.push(Shot.create({
+				this.shotsGroups.push(Shot.create({
 		            position: {
 		                x: Zod.defaults.gun.bounds.x + (Zod.defaults.gun.bounds.width / 2),
 		                y: Zod.defaults.gun.bounds.y - 100
@@ -410,7 +402,7 @@
 				objects.canvas_element.animate({top: "-3px"}, 100, function(){
 						$(this).animate({top: "0"}, 300, function(){
 							
-							Game.values.ready_to_shot = true;
+							++Game.values.ready_to_shot;
 						})
 						view.zoom -=0.002;
 						
@@ -418,7 +410,7 @@
 					})
 					Zod.fire_shot();
 					view.zoom +=0.002;
-					Game.values.ready_to_shot = false;		
+					Game.values.ready_to_shot = 0;		
 			
 			},
 
@@ -490,13 +482,16 @@
 		        };
 
 		        return {
-		            shipsGroups: [],
+		            allShipsGroup: false,
+					
+					shipsGroups: [],
 
 		            shipsReflectGroups: [],
 
 		            draw_ships: function (params) {
-		                shipsGroup = new Group();
-
+		                //shipsGroup = new Group();
+						Enemies.allShipsGroup = new Group();
+						
 		                $(params).each(function (i, e) {
 
 		                    Enemies.shipsGroups[i] = new Group();
@@ -509,7 +504,8 @@
 		                        scale: e.scale
 		                    });
 
-		                    shipsGroup.addChild(Enemies.shipsGroups[i])
+		                    //shipsGroup.addChild(Enemies.shipsGroups[i]);
+							Enemies.allShipsGroup.addChild(Enemies.shipsGroups[i]);
 
 		                    Enemies.shipsReflectGroups[i] = new Group();
 
@@ -519,10 +515,14 @@
 
 		                    });
 
-		                    shipsGroup.addChild(Enemies.shipsReflectGroups[i])
+		                    //shipsGroup.addChild(Enemies.shipsReflectGroups[i]);
+							Enemies.allShipsGroup.addChild(Enemies.shipsReflectGroups[i]);
 
 		                })
-		                shipsGroup.position.x += view.bounds.width;
+						
+		                //shipsGroup.position.x += view.bounds.width;
+						Enemies.allShipsGroup.position.x += view.bounds.width;
+						
 		           
 		            },
 
@@ -533,12 +533,14 @@
 		                    Enemies.shipsReflectGroups[i].position.x -= Game.current_level.animal_ships[i].speed;
 		                });
 						
-						if(!Game.values.confirmation_finish && (Enemies.shipsGroups.length>0) && (Enemies.shipsGroups[0].bounds.x < (Enemies.shipsGroups[0].bounds.width*(-1)+Zod.defaults.controllArea.min))){
+						if(!Game.values.confirmation_finish && (Enemies.shipsGroups.length>0) && (Enemies.allShipsGroup.bounds.x < (Enemies.allShipsGroup.bounds.width*(-1)+Zod.defaults.controllArea.min))){
 							Game.confirm_finish();
-							return;
+							return false;
 							
 		
 						}
+						
+						//console.log(Enemies.allShipsGroup.bounds.x + " -- " + Enemies.allShipsGroup.bounds.width*(-1)+Zod.defaults.controllArea.min);
 							
 
 		            },
@@ -549,7 +551,9 @@
 							Enemies.shipsReflectGroups[i].removeChildren();
 						})
 						
-						shipsGroup.removeChildren();
+						//shipsGroup.removeChildren();
+						Enemies.allShipsGroup.removeChildren();
+						
 						Enemies.shipsGroups.length = 0;
 						Enemies.shipsReflectGroups.length = 0;
 
@@ -581,6 +585,8 @@
 						if(Game.values.active){
 							 
 							if (Zod.shotsGroups.length) Zod.move_shots_to();
+							
+							//if (Zod.shotsGroups.length) Zod.move_shots_to();
 		              
 							if (Zod.values.moved_to) Zod.move_gun_to();
 						}
@@ -646,7 +652,7 @@
 						active: false,
 						confirmation_start: false,
 						confirmation_finish: false,
-						ready_to_shot: true,
+						ready_to_shot: 2,
 						total_ships:0,
 						score: 0,
 						current_level: 1
@@ -801,7 +807,7 @@
 		function onKeyDown(event) {
 		    if (event.key == 'space') {
 			
-				if(Game.values.active && Game.values.ready_to_shot){
+				if(Game.values.active && Game.values.ready_to_shot>1){
 					Zod.start_to_shot();
 								
 					//return false;
@@ -831,6 +837,7 @@
 		    if (event.key == 'space') {
 
 		        //status.toPrint("space");
+				++Game.values.ready_to_shot;
 				
 		        return false;
 		    };
