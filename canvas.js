@@ -751,6 +751,18 @@
 					level_up: function(i){
 						
 						this.values.current_level++;
+						
+						if(this.values.current_level == 2){
+							this.current_level.animal_ships.push({
+								amount: 3,
+								distance: view.bounds.width / 4,
+								position_y: values.horizont + 5,
+								scale: [.2, .1],
+								type: 2,
+								speed: .5
+							});
+						};
+						
 						$(this.current_level.animal_ships).each(function(){
 							this.amount += 3 ;
 							this.speed += .2;
