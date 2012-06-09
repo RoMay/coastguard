@@ -353,13 +353,28 @@
 		                        if (Enemies.shipsGroups[gr].children[ei].handleBounds.intersects(Zod.shotsGroups[i].handleBounds)) {
 		                           
 									
-		                            Enemies.shipsGroups[gr].children[ei].visible = false;
-		                            Enemies.shipsReflectGroups[gr].children[ei].visible = false;
-		                            							
-		                            Zod.shotsGroups[i].visible = false;
 		                            
+		                            Zod.shotsGroups[i].visible = false;
+									
+									Enemies.dyingEnemy = Enemies.shipsGroups[gr].children[ei].clone();
+									Enemies.dyingEnemy.position = Enemies.shipsGroups[gr].children[ei].position;
+									
+									Enemies.dyingEnemyMask = new Path.Rectangle(Enemies.shipsGroups[gr].children[ei].position.x, Enemies.shipsGroups[gr].children[ei].position.y, Enemies.shipsGroups[gr].children[ei].bounds.width, Enemies.shipsGroups[gr].children[ei].bounds.height)
+									
+									Enemies.dyingEnemyMask.position = Enemies.dyingEnemy.position
+									
+									Enemies.dyingEnemyGroup = new Group(Enemies.dyingEnemyMask, Enemies.dyingEnemy);
+									Enemies.dyingEnemyGroup.clipped = true;
+									Enemies.dyingEnemyGroup.opacity=0.99; 
+									
+									Enemies.dyingEnemies.addChild(Enemies.dyingEnemyGroup);
+									
+		                           
+									Enemies.shipsGroups[gr].children[ei].visible = false;
+		                            Enemies.shipsReflectGroups[gr].children[ei].visible = false;
+									
 									Game.values.score++;
-									Status.toScore(Game.values.score);
+									Status.set_score(Game.values.score);
 									
 									if(Game.values.score == Game.values.total_ships) Game.confirm_finish();
 									
@@ -484,6 +499,8 @@
 		        return {
 		            allShipsGroup: false,
 					
+					dyingEnemies: false,
+					
 					shipsGroups: [],
 
 		            shipsReflectGroups: [],
@@ -539,11 +556,22 @@
 							
 		
 						}
-						
-						//console.log(Enemies.allShipsGroup.bounds.x + " -- " + Enemies.allShipsGroup.bounds.width*(-1)+Zod.defaults.controllArea.min);
-							
-
+					
 		            },
+					
+					destroy_dying_enemies: function(){
+						
+						$(Enemies.dyingEnemies.children).each(function (i, e) {
+							e.children[1].opacity *= .99; 	
+							e.children[1].rotate(1);
+							if(e.children[1].opacity<0.2){ 
+								e.remove();
+								//console.log(Enemies.dyingEnemyGroup)
+								
+							}
+							
+						});
+					},
 					
 					remove_all_enemies: function(){
 						$(Enemies.shipsGroups).each(function(i){
@@ -565,6 +593,8 @@
 						
 						this.draw_ships(Game.current_level.animal_ships);
 						
+						this.dyingEnemies = new Group();
+						this.dyingEnemies.clipMask = false;
 		            }
 
 		        };
@@ -586,8 +616,8 @@
 							 
 							if (Zod.shotsGroups.length) Zod.move_shots_to();
 							
-							//if (Zod.shotsGroups.length) Zod.move_shots_to();
-		              
+							if (Enemies.dyingEnemies.children.length) Enemies.destroy_dying_enemies();
+							
 							if (Zod.values.moved_to) Zod.move_gun_to();
 						}
 
@@ -621,6 +651,7 @@
 		        }
 
 		    }; 
+			
 		
 		
 		var Game = new function () { // basic game configuration, level dependencies
@@ -629,6 +660,7 @@
 					start_confirmation_window: $("#start-confirmation"),
 					end_confirmation_window: $("#end-confirmation"),
 					current_score_field: $("#current-score"),
+					start_to_play: $("#start_to_play"),
 					play_next: $("#play-next"),
 					play_again: $("#play-again"),
 					
@@ -658,6 +690,27 @@
 						current_level: 1
 					}
 				};
+				
+				Status = {
+				  obj: $("#status-info"),
+				  scoreStr: $("#current-score-info"),
+				  levelStr: $("#current-level-info"),
+				  
+				  toInfo: function(value){
+					//Status.str = Status.scoreStr +" | "+ value;
+				  },
+				  set_score: function(i){
+					Status.scoreStr.html(i);
+					//console.log(Status.scoreStr)
+				  },
+				  set_level: function(i){
+					Status.levelStr.html(i)
+				  },
+				  toPrint: function(value){
+					//
+				  }
+				};
+			
 
 				return {
 					values: defaults.values,
@@ -677,8 +730,8 @@
 							
 						}
 						
-						$(defaults.start_confirmation_window).click(function(){
-							confirmed(this);
+						$(defaults.start_to_play).click(function(){
+							confirmed(defaults.start_confirmation_window);
 							
 						})
 						$(window).keyup(function(event) {
@@ -712,7 +765,7 @@
 					
 					start: function(i){
 						
-						if(i>this.values.current_level){
+						if(i>this.values.current_level){  
 							this.level_up(i);
 						};
 						Enemies.init();
@@ -720,7 +773,8 @@
 						this.values.confirmation_finish = false;
 						this.total_ships();
 						this.values.score = 0;
-						Status.toScore(this.values.score)
+						Status.set_score(this.values.score);
+						Status.set_level(this.values.current_level)
 						
 					},
 					
@@ -752,22 +806,25 @@
 						
 						this.values.current_level++;
 						
-						if(this.values.current_level == 2){
-							this.current_level.animal_ships.push({
-								amount: 3,
-								distance: view.bounds.width / 4,
-								position_y: values.horizont + 5,
-								scale: [.2, .1],
-								type: 2,
-								speed: .5
-							});
-						};
 						
 						$(this.current_level.animal_ships).each(function(){
 							this.amount += 3 ;
 							this.speed += .2;
 							
 						});
+						
+						if(this.values.current_level == 2){
+							
+							this.current_level.animal_ships.push({
+								amount: 3,
+								distance: view.bounds.width / 6,
+								position_y: values.horizont + 5,
+								scale: [.2, .1],
+								type: 2,
+								speed: .7
+							});
+						};
+						
 						
 					},
 					

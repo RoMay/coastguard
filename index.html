@@ -9,26 +9,6 @@
 	<script type="text/javascript" src="excanvas.js"></script>
 	<![endif]-->
 	<script type="text/javascript">
-	$(document).ready(function(){
-	Status = {
-		  defstr: "SCORE: \n",
-		  obj: $("#status-info"),
-		  toInfo: function(value){
-			Status.str = Status.defstr +" | "+ value;
-		  },
-		  toScore: function(i){
-			Status.toPrint(i)
-		  },
-		  toLevel: function(i){
-			Status.toPrint(i? i : Status.score +=1)
-		  },
-		  toPrint: function(value){
-			var v = Status.defstr + value
-			$(Status.obj).html(v);
-		  }
-		};
-		
-		})
 		
 	</script>	
     <script type="text/paperscript" canvas="scene-canvas" src="canvas.js"></script>
@@ -39,7 +19,7 @@
   <body> 
       
       
-	  <div class="box panel confirmation" id="start-confirmation" style="0px;"><div class="box slick-box"><h3>Start</h3></div></div>
+	  <div class="box panel confirmation" id="start-confirmation" style="0px;"><div class="box slick-box"><h3>Play Coast Guard</h3><ul class="horizonalList"><li id="start_to_play">Start</li></ul></div></div>
 	  <div class="box panel confirmation" id="end-confirmation" style="0px;"><div class="box slick-box"><h3>Current score: <span id="current-score"></span></h3><ul class="horizonalList"><li id="play-again">Again</li><li id="play-next">Next</li></ul></div></div>
 	  <div class="canvasImages">
 	    <img id="zod" class="zod-area" src="img/zod.png" />
@@ -60,8 +40,15 @@
 	  
 	  <div class="canvasWrapper">
 			<canvas id="scene-canvas" resize></canvas>
+			<div id="status-info">
+				<dl>
+					<dt>Level</dt><dd id="current-level-info"></dd>
+					<dt>Score</dt><dd id="current-score-info"></dd>
+					<!--<dd>Total Score</dd><dt id="total-score"></dt>-->
+				</dl>
+			</div>
 	  </div>
-	  <div id="status-info"></div>
+	  
 	  
 	  
   </body> 
