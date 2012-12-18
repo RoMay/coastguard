@@ -562,7 +562,7 @@
 					destroy_dying_enemies: function(){
 						
 						$(Enemies.dyingEnemies.children).each(function (i, e) {
-							e.children[1].opacity *= .99; 	
+							e.children[1].opacity *= .92; 	
 							e.children[1].rotate(1);
 							if(e.children[1].opacity<0.2){ 
 								e.remove();
